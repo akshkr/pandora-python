@@ -189,5 +189,5 @@ class Canvas:
 		
 		# Reinitialize object vars
 		self._train_size = self._train_size + (len(balanced_df) - size_idx)
-		self._data = pd.concat([balanced_df.drop(self._target_column, axis=1), self._data.iloc[size_idx:]], axis=0)
-		self._target = pd.concat([balanced_target, self._target.iloc[size_idx:]])
+		self._data = pd.concat([balanced_df.drop(self._target_column, axis=1), self._data.iloc[size_idx:]], axis=0).reset_index(drop=True)
+		self._target = pd.concat([balanced_target, self._target.iloc[size_idx:]]).reset_index(drop=True)

@@ -25,12 +25,12 @@ class Canvas:
 		
 		# Get train size and validation size
 		self._train_size = len(self._train)
-		self._valid_size = self._train_size * valid_frac
+		self._valid_size = int(self._train_size * valid_frac)
 
 		# Join data and separate target
 		self._data, self._target = self._join_df()
 		
-		del self._train, self._test, self._target_column
+		del self._train, self._test
 	
 	def _auto_detect_target(self):
 		"""
@@ -42,8 +42,8 @@ class Canvas:
 		
 		if len(target_column) > 1:
 			raise ValueError(f'Found more than one target : {target_column}')
-		
 		else:
+			print(f'Target Column detected : {target_column[0]}')
 			return target_column[0]
 	
 	def _join_df(self):
@@ -78,7 +78,10 @@ class Canvas:
 		
 		:return:
 		"""
-		return self._data.iloc[:self._train_size].iloc[-1*self._valid_size:]
+		if self._valid_size:
+			return self._data.iloc[:self._train_size].iloc[-1*self._valid_size:]
+		else:
+			warnings.warn(f'There is no validation data, either not initialised or lost.')
 	
 	@property
 	def y_valid(self):
@@ -86,7 +89,10 @@ class Canvas:
 
 		:return:
 		"""
-		return self._target.iloc[-1 * self._valid_size:]
+		if self._valid_size:
+			return self._target.iloc[-1 * self._valid_size:]
+		else:
+			warnings.warn(f'There is no validation target, either not initialised or lost.')
 	
 	@property
 	def test(self):
@@ -156,10 +162,9 @@ class Canvas:
 		for col in columns:
 			self._data[col] = min_max_scale(self._data, col)
 	
-	def balance(self, target, bal_frac=0.33, validation=False):
+	def balance(self, bal_frac=0.33, validation=False):
 		"""
 
-		:param target:
 		:param bal_frac:
 		:param validation:
 		:return:
@@ -168,17 +173,21 @@ class Canvas:
 		
 		if validation:
 			# Concat validation train data and target to balance
+			size_idx = len(self.train)
 			data_to_balance = pd.concat([self.train, self.y_train], axis=1)
+			
 		else:
 			# Concat total train data and target
 			warnings.warn(f'The validation data is lost!!!')
-			data_to_balace = pd.concat([self.data, self.target], axis=1)
-			
-		balanced_df = make_balanced_df(data_to_balance, target, bal_frac)
+			size_idx = len(self.data)
+			data_to_balance = pd.concat([self.data, self.target], axis=1)
+			self._valid_size = 0
 		
-		balanced_target = balanced_df[target]
-		retained_target = retained_df[target]
-		balanced_df.drop(target, axis=1, inplace=True)
-		retained_df.drop(target, axis=1, inplace=True)
+		# Balancing Dataframe
+		balanced_df = make_balanced_df(data_to_balance, self._target_column, bal_frac)
+		balanced_target = balanced_df[self._target_column]
 		
-		return balanced_df, retained_df, balanced_target, retained_target
+		# Reinitialize object vars
+		self._train_size = self._train_size + (len(balanced_df) - size_idx)
+		self._data = pd.concat([balanced_df.drop(self._target_column, axis=1), self._data.iloc[size_idx:]], axis=0)
+		self._target = pd.concat([balanced_target, self._target.iloc[size_idx:]])

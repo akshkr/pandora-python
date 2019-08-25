@@ -3,16 +3,17 @@ from sklearn.ensemble import (
 	GradientBoostingClassifier, ExtraTreesClassifier
 )
 from sklearn.model_selection import StratifiedKFold
+from threading import Thread
 from sklearn.svm import SVC
 import pandas as pd
 import numpy as np
+import time
 
 
-def stack(canvas_obj, validation=False):
+def stack(canvas_obj):
 	"""
 	
 	:param canvas_obj:
-	:param validation:
 	:return:
 	"""
 	stack_obj = _Stack(canvas_obj)
@@ -29,7 +30,8 @@ class _Stack:
 		self.n_folds = 5  # set folds for out-of-fold prediction
 		self.kf = StratifiedKFold(n_splits=self.n_folds, random_state=self.seed)
 		
-	def get_oof(self, clf):
+	def get_oof(self, clf, output_list, tri, tei):
+		time_idx = time.time()
 		oof_train = np.zeros((self.n_train,))
 		oof_test = np.zeros((self.n_test,))
 		oof_test_skf = np.empty((self.n_folds, self.n_test))
@@ -47,7 +49,10 @@ class _Stack:
 			i += 1
 	
 		oof_test[:] = oof_test_skf.mean(axis=0)
-		return oof_train.reshape(-1, 1), oof_test.reshape(-1, 1)
+		
+		print(f'Time for {clf} : {time.time() - time_idx}')
+		output_list[tri] = oof_train.reshape(-1, 1)
+		output_list[tei] = oof_test.reshape(-1, 1)
 	
 	def make_stack(self):
 		"""
@@ -68,7 +73,7 @@ class _Stack:
 		# Extra Trees Parameters
 		et_params = {
 			'n_jobs': -1,
-			'n_estimators': 500,
+			'n_estimators': 100,
 			# 'max_features': 0.5,
 			'max_depth': 8,
 			'min_samples_leaf': 2,
@@ -77,18 +82,18 @@ class _Stack:
 		
 		# AdaBoost parameters
 		ada_params = {
-			'n_estimators': 500,
+			'n_estimators': 100,
 			'learning_rate': 0.75
 		}
 		
 		# Gradient Boosting parameters
-		gb_params = {
-			'n_estimators': 500,
-			# 'max_features': 0.2,
-			'max_depth': 5,
-			'min_samples_leaf': 2,
-			'verbose': 0
-		}
+		# gb_params = {
+		# 	'n_estimators': 100,
+		# 	# 'max_features': 0.2,
+		# 	'max_depth': 5,
+		# 	'min_samples_leaf': 2,
+		# 	'verbose': 0
+		# }
 		
 		# Support Vector Classifier parameters
 		# svc_params = {
@@ -96,28 +101,50 @@ class _Stack:
 		# 	'C': 0.025
 		# }
 		
+		output_list = [0, 0, 0, 0, 0, 0]
 		rf = _ModelHelper(model=RandomForestClassifier, seed=self.seed, params=rf_params)
-		et = _ModelHelper(model=ExtraTreesClassifier, seed=self.seed, params=et_params)
-		ada = _ModelHelper(model=AdaBoostClassifier, seed=self.seed, params=ada_params)
-		gb = _ModelHelper(model=GradientBoostingClassifier, seed=self.seed, params=gb_params)
-		# svc = _ModelHelper(model=SVC, seed=self.seed, params=svc_params)
+		t1 = Thread(target=self.get_oof, args=(rf, output_list, 0, 1))
+		# rf_oof_train, rf_oof_test = self.get_oof(rf)  # Random Forest
 		
-		et_oof_train, et_oof_test = self.get_oof(et)  # Extra Trees
-		rf_oof_train, rf_oof_test = self.get_oof(rf)  # Random Forest
-		ada_oof_train, ada_oof_test = self.get_oof(ada)  # AdaBoost
-		gb_oof_train, gb_oof_test = self.get_oof(gb)  # Gradient Boost
+		et = _ModelHelper(model=ExtraTreesClassifier, seed=self.seed, params=et_params)
+		t2 = Thread(target=self.get_oof, args=(et, output_list, 2, 3))
+		# et_oof_train, et_oof_test = self.get_oof(et)  # Extra Trees
+		
+		ada = _ModelHelper(model=AdaBoostClassifier, seed=self.seed, params=ada_params)
+		t3 = Thread(target=self.get_oof, args=(ada, output_list, 4, 5))
+		
+		t1.start()
+		t2.start()
+		t3.start()
+		
+		t1.join()
+		t2.join()
+		t3.join()
+		
+		# gb = _ModelHelper(model=GradientBoostingClassifier, seed=self.seed, params=gb_params)
+		# gb_oof_train, gb_oof_test = self.get_oof(gb)  # Gradient Boost
+		
+		# svc = _ModelHelper(model=SVC, seed=self.seed, params=svc_params)
 		# svc_oof_train, svc_oof_test = self.get_oof(svc)  # Support Vector Classifier
 		
 		base_predictions_train = pd.DataFrame({
-			'RandomForest': rf_oof_train.ravel(),
-			'ExtraTrees': et_oof_train.ravel(),
-			'AdaBoost': ada_oof_train.ravel(),
-			'GradientBoost': gb_oof_train.ravel()
+			'RandomForest': output_list[0].ravel(),
+			'ExtraTrees': output_list[2].ravel(),
+			'AdaBoost': output_list[4].ravel(),
+			# 'GradientBoost': gb_oof_train.ravel()
 		})
 		
-		print(base_predictions_train.head())
+		base_predictions_test = pd.DataFrame({
+			'RandomForest': output_list[1].ravel(),
+			'ExtraTrees': output_list[3].ravel(),
+			'AdaBoost': output_list[5].ravel(),
+			# 'GradientBoost': gb_oof_test.ravel()
+		})
 		
-	
+		stack_df = pd.concat([base_predictions_train, base_predictions_test], axis=0).reset_index(drop=True)
+		self._canvas._data = pd.concat([self._canvas.dataframe.copy(), stack_df], axis=1)
+		
+		
 class _ModelHelper:
 	
 	def __init__(self, model, seed=0, params=None):

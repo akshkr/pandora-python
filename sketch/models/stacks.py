@@ -142,7 +142,7 @@ class _Stack:
 		})
 		
 		stack_df = pd.concat([base_predictions_train, base_predictions_test], axis=0).reset_index(drop=True)
-		self._canvas._data = pd.concat([self._canvas.dataframe.copy(), stack_df], axis=1)
+		self._canvas._data = pd.concat([self._canvas.data.copy(), stack_df], axis=1)
 		
 		
 class _ModelHelper:

@@ -35,12 +35,12 @@ class Canvas(OPFrame):
 		
 		# Get train size and validation size
 		self._train_size = len(self._train)
-
+		
 		# Join data and separate target
 		data, target = self._join_df()
 		
 		OPFrame.__init__(self, data, target)
-		del self._train, self._test
+		del self._train
 	
 	def _auto_detect_target(self):
 		"""
@@ -67,13 +67,16 @@ class Canvas(OPFrame):
 		
 		# Handling cases with test data
 		if self._test is not None:
+			column_order = self._test.columns
 			common_columns = list(set(self._train.columns) & set(self._test.columns))
 		
-			return pd.concat([self._train[common_columns], self._test[common_columns]], axis=0),\
-				self._train[self._target_column_name]
+			data = pd.concat([self._train[common_columns], self._test[common_columns]], axis=0, sort=False)[column_order]
+			target = self._train[self._target_column_name]
+			
+			return data, target
 		else:
 			# When no test data given
-			return self._train.drop(self._target_column_name), self._train[self._target_column_name]
+			return self._train.drop(self._target_column_name, axis=1), self._train[self._target_column_name]
 	
 	@property
 	def train(self):
@@ -103,7 +106,7 @@ class Canvas(OPFrame):
 		return self._data.iloc[self._train_size:]
 	
 	@property
-	def dataframe(self):
+	def data(self):
 		"""
 		
 		:return:

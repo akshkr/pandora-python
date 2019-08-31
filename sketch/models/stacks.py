@@ -24,7 +24,7 @@ class _Stack:
 	
 	def __init__(self, canvas):
 		self._canvas = canvas
-		self.n_train = canvas.data.shape[0]
+		self.n_train = canvas.train.shape[0]
 		self.n_test = canvas.test.shape[0]
 		self.seed = 49  # for reproducibility
 		self.n_folds = 5  # set folds for out-of-fold prediction
@@ -37,10 +37,10 @@ class _Stack:
 		oof_test_skf = np.empty((self.n_folds, self.n_test))
 		
 		i = 0
-		for train_index, test_index in self.kf.split(self._canvas.data, self._canvas.target):
-			x_tr = self._canvas.data.loc[train_index]
+		for train_index, test_index in self.kf.split(self._canvas.train, self._canvas.target):
+			x_tr = self._canvas.train.loc[train_index]
 			y_tr = self._canvas.target.loc[train_index]
-			x_te = self._canvas.data.loc[test_index]
+			x_te = self._canvas.train.loc[test_index]
 			
 			clf.train(x_tr, y_tr)
 	

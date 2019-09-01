@@ -3,15 +3,22 @@ import pandas as pd
 
 class OPFrame:
 	
-	def __init__(self, data, target):
+	def __init__(self, data):
 		"""
 		
 		:param data:
-		:param target:
 		"""
 		
 		object.__setattr__(self, "_data", data)
-		object.__setattr__(self, "_target", target)
+	
+	@property
+	def data(self):
+		"""
+
+		:return:
+		"""
+		
+		return self._data
 	
 	def one_hot_encode(self, feature, drop=True):
 		"""

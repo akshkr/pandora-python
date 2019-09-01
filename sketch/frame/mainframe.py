@@ -38,9 +38,8 @@ class Canvas(OPFrame):
 		
 		# Join data and separate target
 		data, target = self._join_df()
-		
-		OPFrame.__init__(self, data, target)
-		del self._train
+		self._target = target
+		OPFrame.__init__(self, data)
 	
 	def _auto_detect_target(self):
 		"""
@@ -104,15 +103,6 @@ class Canvas(OPFrame):
 			print(f'No Test data detected')
 			return None
 		return self._data.iloc[self._train_size:]
-	
-	@property
-	def data(self):
-		"""
-		
-		:return:
-		"""
-		
-		return self._data
 	
 	def balance(self, bal_frac=0.33, validation=False):
 		"""

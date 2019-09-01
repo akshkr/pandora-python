@@ -1,3 +1,4 @@
+from sketch.util.dfhandler import reduce_mem_usage
 from sketch.frame.operation import OPFrame
 import pandas as pd
 import warnings
@@ -5,7 +6,7 @@ import warnings
 
 class Canvas(OPFrame):
 	
-	def __init__(self, train, test, target_column_name=None):
+	def __init__(self, train, test, target_column_name=None, reduce_memory=False):
 		"""
 		
 		:param train:
@@ -38,6 +39,11 @@ class Canvas(OPFrame):
 		
 		# Join data and separate target
 		data, target = self._join_df()
+		
+		# Reduce memory usage of the data
+		if reduce_memory:
+			data = reduce_mem_usage(data)
+			
 		self._target = target
 		OPFrame.__init__(self, data)
 	

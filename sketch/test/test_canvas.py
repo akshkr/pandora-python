@@ -27,22 +27,22 @@ def test_all_args():
 	# test Canvas data
 	test_df = total.drop('T', axis=1)
 	output_df = canvas_obj.data.sort_index()
-	assert_frame_equal(test_df, output_df, check_exact=True)
+	assert_frame_equal(test_df, output_df, check_exact=True, check_dtype=False)
 	
 	# Test Canvas Train
 	test_df = train.drop('T', axis=1)
 	output_df = canvas_obj.train.sort_index()
-	assert_frame_equal(test_df, output_df, check_exact=True)
+	assert_frame_equal(test_df, output_df, check_exact=True, check_dtype=False)
 
 	# Test Canvas Target
 	test_df = train['T']
 	output_df = canvas_obj.target.sort_index()
-	assert_series_equal(test_df, output_df, check_exact=True)
+	assert_series_equal(test_df, output_df, check_exact=True, check_dtype=False)
 
 	# Test Canvas test
 	test_df = test
 	output_df = canvas_obj.test.sort_index()
-	assert_frame_equal(test_df, output_df, check_exact=True)
+	assert_frame_equal(test_df, output_df, check_exact=True, check_dtype=False)
 
 
 def test_one_data():
@@ -64,17 +64,17 @@ def test_one_data():
 	# test Canvas data
 	test_df = train.drop('T', axis=1)
 	output_df = canvas_obj.data.sort_index()
-	assert_frame_equal(test_df, output_df, check_exact=True)
+	assert_frame_equal(test_df, output_df, check_exact=True, check_dtype=False)
 	
 	# Test Canvas Train
 	test_df = train.drop('T', axis=1)
 	output_df = canvas_obj.train.sort_index()
-	assert_frame_equal(test_df, output_df, check_exact=True)
+	assert_frame_equal(test_df, output_df, check_exact=True, check_dtype=False)
 	
 	# Test Canvas Target
 	test_df = train['T']
 	output_df = canvas_obj.target.sort_index()
-	assert_series_equal(test_df, output_df, check_exact=True)
+	assert_series_equal(test_df, output_df, check_exact=True, check_dtype=False)
 	
 	# Test Canvas test
 	output_df = canvas_obj.test

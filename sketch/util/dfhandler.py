@@ -10,7 +10,7 @@ def reduce_mem_usage(df, verbose=True):
 		if col_type in numerals:
 			c_min = df[col].min()
 			c_max = df[col].max()
-			if str(col_type)[:3] == 'int':
+			if str(col_type).startswith('int'):
 				if c_min > np.iinfo(np.int8).min and c_max < np.iinfo(np.int8).max:
 					df[col] = df[col].astype(np.int8)
 				elif c_min > np.iinfo(np.int16).min and c_max < np.iinfo(np.int16).max:
@@ -28,7 +28,10 @@ def reduce_mem_usage(df, verbose=True):
 					df[col] = df[col].astype(np.float64)
 	end_mem = df.memory_usage().sum() / 1024**2
 	if verbose:
-		print('Mem. usage decreased to {:5.2f} Mb ({:.1f}% reduction)'.format(end_mem, 100 * (start_mem - end_mem) / start_mem))
+		print(
+			f'Mem. usage decreased to {end_mem.round(2)} Mb'
+			f' {(100 * (start_mem - end_mem) / start_mem).round(2)}% reduction)'
+		)
 	return df
 
 

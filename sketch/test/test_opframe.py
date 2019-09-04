@@ -5,7 +5,7 @@ import string
 import random
 
 
-def test_op_operations():
+def test_operations():
 	
 	upper_case = string.ascii_uppercase
 	classes = ['A', 'B', 'C']
@@ -31,5 +31,6 @@ def test_op_operations():
 	
 	opframe_obj.one_hot_encode(['B'])
 	output_df = opframe_obj.data
+	
 	assert list(test_df.columns.sort_values()) == list(output_df.columns.sort_values())
 	assert_frame_equal(test_df, output_df[cols], check_dtype=False)

@@ -6,7 +6,13 @@ import warnings
 
 class Canvas(OPFrame):
 	
-	def __init__(self, train, test, target_column_name=None, reduce_memory=False):
+	def __init__(
+		self,
+		train,
+		test,
+		target_column_name,
+		reduce_memory
+	):
 		"""
 		
 		:param train:
@@ -109,6 +115,7 @@ class Canvas(OPFrame):
 			print(f'No Test data detected')
 			return None
 		return self._data.iloc[self._train_size:]
+	
 	
 	def balance(self, bal_frac=0.33, validation=False):
 		"""

@@ -23,6 +23,17 @@ def color_groups(val):
 	return f'background-color: {color}'
 
 
+def color_null(val):
+	"""
+	
+	:param val:
+	"""
+	null_palette = sns.diverging_palette(140, 0, s=99, l=40, n=10).as_hex()
+	color = null_palette[int(val*10)]
+	
+	return f'color: {color}'
+
+
 def analyse(obj, path='analyzed_df.xlsx'):
 	"""
 	Main analyser function to be called on a DataFrame or a Canvas object
@@ -64,7 +75,7 @@ def analyse(obj, path='analyzed_df.xlsx'):
 	
 	# Style the DataFrame and save in Excel format
 	styled_df = stylize(result_df, res)
-	styled_df.to_excel(path, engine='openpyxl', encoding='utf-8', index=False)
+	styled_df.to_excel(path, engine='openpyxl', index=False)
 
 
 def stylize(df, res):
@@ -76,6 +87,8 @@ def stylize(df, res):
 	"""
 	
 	indexer = df.copy()
+	
+	# Do not remove this. Gets evaluated as string
 	styled_df = df.style
 	
 	# The string to be evaluated for styling
@@ -85,9 +98,12 @@ def stylize(df, res):
 	for g in res:
 		g_df = indexer.loc[indexer['Columns'].str.contains('|'.join(g))].index
 		style_string = f"{style_string}.applymap(color_groups, subset=pd.IndexSlice[{g_df.min()}:{g_df.max()}, ['Columns']])"
+		
+	style_string = f'{style_string}.applymap(color_null, subset=["Null_Percentage"])'
 	
 	# Evaluate the style string
-	eval(style_string)
+	styled_df = eval(style_string)
+	
 	return styled_df
 
 

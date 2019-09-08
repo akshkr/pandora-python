@@ -43,5 +43,5 @@ def null_percentage(df, result_df):
 	:return:
 	"""
 	
-	result_df['Null_Percentage'] = result_df['Columns'].apply(lambda x: (df[x].count()/len(df)).round(3))
+	result_df['Null_Percentage'] = result_df['Columns'].apply(lambda x: (1 - df[x].count()/len(df)).round(3))
 	return result_df

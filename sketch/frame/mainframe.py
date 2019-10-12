@@ -15,12 +15,13 @@ class Canvas(OPFrame):
 	):
 		"""
 		
-		:param train:
-		:param test:
-		:param target_column_name:
+		:param train: Training Data
+		:param test: Test Data
+		:param target_column_name: The column to be predicted. If not specified tried to detect on its own
+		:param reduce_memory: True to reduce the memory taken by DataFrame by reducing the Data Type
 		"""
 		
-		# Initialize train
+		# Shuffle and initialize train
 		self._train = train.sample(frac=1)
 		
 		# Initialize test and target column
@@ -92,30 +93,41 @@ class Canvas(OPFrame):
 	@property
 	def train(self):
 		"""
-
-		:return:
+		Returns the training data
+		
+		:return: training data
 		"""
 		return self._data.iloc[:self._train_size]
 	
 	@property
 	def target(self):
 		"""
+		Returns the target (Present in the training data
 
-		:return:
+		:return: Target column in the training data
 		"""
 		return self._target
 	
 	@property
 	def test(self):
 		"""
+		Returns the test data
 		
-		:return:
+		:return: test data
 		"""
 		if self._test is None:
 			print(f'No Test data detected')
 			return None
 		return self._data.iloc[self._train_size:]
 	
+	def drop_cols(self, cols):
+		"""
+		Drop list of columns from the canvas df
+		
+		:param cols: List of columns to drop
+		"""
+		
+		self._data.drop(columns=cols, inplace=True)
 	
 	def balance(self, bal_frac=0.33, validation=False):
 		"""

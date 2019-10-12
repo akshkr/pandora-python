@@ -107,6 +107,6 @@ def stylize(df, res):
 	return styled_df
 
 
-d = pd.read_csv('/Users/akashkumar/Workspace/Data Science/data/ieee-fraud-detection/train_transaction.csv', nrows=10000)
+# d = pd.read_csv('/Users/akashkumar/Workspace/Data Science/data/ieee-fraud-detection/train_transaction.csv', nrows=10000)
 # d = pd.read_csv('/Users/akashkumar/Workspace/Data Science/data/av_India_ml/train.csv')
-analyse(d)
+# analyse(d)

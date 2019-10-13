@@ -30,16 +30,16 @@ class Canvas(OPFrame):
 		
 			# check if target column user input else autodetect
 			if target_column_name is None:
-				self._target_column_name = self._auto_detect_target()
+				self.target_column_name = self._auto_detect_target()
 			else:
-				self._target_column_name = target_column_name
+				self.target_column_name = target_column_name
 		else:
 			self._test = None
 			if target_column_name is not None:
-				self._target_column_name = target_column_name
+				self.target_column_name = target_column_name
 			else:
 				warnings.warn('No Target column defined')
-				self._target_column_name = None
+				self.target_column_name = None
 		
 		# Get train size and validation size
 		self._train_size = len(self._train)
@@ -74,7 +74,7 @@ class Canvas(OPFrame):
 		:return:
 		"""
 		# If no target column
-		if self._target_column_name is None:
+		if self.target_column_name is None:
 			return self._train, None
 		
 		# Handling cases with test data
@@ -83,12 +83,12 @@ class Canvas(OPFrame):
 			common_columns = list(set(self._train.columns) & set(self._test.columns))
 		
 			data = pd.concat([self._train[common_columns], self._test[common_columns]], axis=0, sort=False)[column_order]
-			target = self._train[self._target_column_name]
+			target = self._train[self.target_column_name]
 			
 			return data, target
 		else:
 			# When no test data given
-			return self._train.drop(self._target_column_name, axis=1), self._train[self._target_column_name]
+			return self._train.drop(self.target_column_name, axis=1), self._train[self.target_column_name]
 	
 	@property
 	def train(self):

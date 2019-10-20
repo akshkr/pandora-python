@@ -1,3 +1,4 @@
+# Light GBM parameters
 lgb_params:
   'objective': 'binary'
   'boosting_type': 'gbdt'

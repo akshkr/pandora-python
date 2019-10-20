@@ -32,6 +32,13 @@ def reduce_mem_usage(df, verbose=True):
 			f'Mem. usage decreased to {end_mem.round(2)} Mb'
 			f' {(100 * (start_mem - end_mem) / start_mem).round(2)}% reduction)'
 		)
+		
+	original_df = df.copy()
+	for col in df.columns:
+		if df[col].dtype != 'O':
+			if (df[col] - original_df[col]).sum()!=0:
+				df[col] = original_df[col]
+				print(f'Bad transformation of {col}. Reverting...')
 	return df
 
 

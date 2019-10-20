@@ -23,7 +23,6 @@ def group_target_aggregate(can, columns):
 		train_df[f'{col}_target_mean'] = train_df[col].map(map_dict)
 		test_df[f'{col}_target_mean'] = test_df[col].map(map_dict)
 		
-	train_df.drop(columns=[can.target_column_name], inplace=True)
 	data = pd.concat([train_df, test_df], axis=0)
 	can._data = data
 	

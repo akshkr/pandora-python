@@ -12,7 +12,6 @@ class Canvas(OPFrame):
 	
 	Parameters
 	----------
-	
 	train : DataFrame
 		Training DataFrame which contains target
 	test : DataFrame
@@ -34,7 +33,6 @@ class Canvas(OPFrame):
 		reduce_memory=False
 	):
 		
-		# Shuffle and initialize train
 		self._train = train.sample(frac=1).reset_index(drop=True)
 		
 		# Initialize test and target column
@@ -64,7 +62,6 @@ class Canvas(OPFrame):
 		if reduce_memory:
 			data = reduce_mem_usage(data)
 			
-		self._target = target
 		OPFrame.__init__(self, data)
 	
 	def _auto_detect_target(self):
@@ -134,15 +131,14 @@ class Canvas(OPFrame):
 			return None
 		return self._data.iloc[self._train_size:].drop(columns=[self.target_column_name])
 	
-	def drop_cols(self, cols):
+	def drop_cols(self, columns):
 		"""
 		Drops columns from the data
 		
 		Parameters
 		----------
-		
-		cols : list of columns
+		columns : list of columns
 			List of columns to drop from the data
 		"""
 		
-		self._data.drop(columns=cols, inplace=True)
+		self._data.drop(columns=columns, inplace=True)

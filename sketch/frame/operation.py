@@ -8,7 +8,6 @@ class OPFrame:
 	
 	Parameters
 	----------
-	
 	data : DataFrame
 		The input is the DataFrame on which the operations are to be done
 	"""

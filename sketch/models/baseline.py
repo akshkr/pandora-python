@@ -9,21 +9,34 @@ import gc
 
 
 class Baseline(Model):
+	"""
+	Baseline model class to check for preliminary predictions.
+	Uses Light GBM model for prediction
 	
+	Parameters
+	----------
+	can: canvas object
+		The train data of canvas is used for training and validation.
+		The predictions are made on test and the output is returned
+	"""
 	def __init__(self, can):
-		"""
-		:param can: Canvas object
-		"""
 		self._can = can
-		self._estimator = None
 		
-	def make_prediction(self):
+	def make_prediction(self, n_splits):
 		"""
 		Makes prediction
 		
-		:return: predictions on test data
+		Parameters
+		----------
+		n_splits : int
+			Number of Folds for validation
+			
+		Returns
+		-------
+		Predictions on test if available else array of zeros
 		"""
-		folds = KFold(n_splits=10, shuffle=True, random_state=42)
+		
+		folds = KFold(n_splits=n_splits, shuffle=True, random_state=42)
 		predictions = np.zeros(len(self._can.test))
 		
 		# Reading parameter file
@@ -50,7 +63,7 @@ class Baseline(Model):
 			
 			if self._can.test is not None:
 				this_prediction = estimator.predict(self._can.test)
-				predictions += this_prediction/10
+				predictions += this_prediction/n_splits
 			
 			del train_data, validation_data
 			gc.collect()

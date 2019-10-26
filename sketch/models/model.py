@@ -1,6 +1,6 @@
 class Model:
 	
-	def make_prediction(self):
+	def make_prediction(self, n_splits):
 		"""
 		Make Prediction
 		"""

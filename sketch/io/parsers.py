@@ -5,11 +5,20 @@ def outline(df1, df2=None, target_column_name=None, reduce_memory=False):
 	"""
 	Makes a canvas object instance
 	
-	:param df1: DataFrame one, supposed to be training data
-	:param df2: DataFrame two, supposed to be test data
-	:param target_column_name: Name of the target column in the train data
-	:param reduce_memory: Reduce the datatype for less memory consumption
-	:return: Canvas object instance
+	Parameters
+	----------
+	df1 : DataFrame
+		training data
+	df2 : DataFrame
+		test data
+	target_column_name : String
+		Name of the target column in the train data
+	reduce_memory : Boolean
+		Reduce the datatype for less memory consumption
+		
+	Returns
+	-------
+	Canvas object instance
 	"""
 	
 	if not isinstance(df1, pd.DataFrame):

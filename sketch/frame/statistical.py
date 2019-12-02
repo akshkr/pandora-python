@@ -4,7 +4,7 @@ import warnings
 
 class STFrame:
 	"""
-	Frame to handle Statistical Data Processing part like encoding and scaling etc
+	Frame to handle Statistical Data Processing part like encoding and scaling etc.
 	
 	Parameters
 	----------

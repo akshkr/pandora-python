@@ -35,6 +35,8 @@ class Baseline(Model):
 		-------
 		Predictions on test if available else array of zeros
 		"""
+		if self._can.target_column_name is None:
+			raise NameError(f'Target column is defined')
 		
 		folds = KFold(n_splits=n_splits, shuffle=True, random_state=42)
 		predictions = np.zeros(len(self._can.test))

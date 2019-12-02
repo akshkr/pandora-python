@@ -9,10 +9,14 @@ def group_target_aggregate(can, columns):
 	:param columns: columns to aggregate
 	:return: canvas object
 	"""
+	
+	# Concat train and target to create a dictionary
 	train_df = pd.concat([can.train, pd.Series(can.target)], axis=1)
 	test_df = can.test
 	
 	for col in columns:
+		
+		# Create a dictionary using aggregation used in mapping to values to a new column
 		map_dict = train_df.groupby([col])[can.target_column_name].agg(['mean']).reset_index().rename(
 			columns={'mean': f'{col}_target_mean'}
 		)
@@ -20,6 +24,7 @@ def group_target_aggregate(can, columns):
 		map_dict.index = map_dict[col].values
 		map_dict = map_dict[col+'_target_mean'].to_dict()
 		
+		# Map and create the new column
 		train_df[f'{col}_target_mean'] = train_df[col].map(map_dict)
 		test_df[f'{col}_target_mean'] = test_df[col].map(map_dict)
 		

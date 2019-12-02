@@ -63,6 +63,9 @@ class Canvas(OPFrame):
 			data = reduce_mem_usage(data)
 			
 		OPFrame.__init__(self, data)
+		
+		print(f'Train Data shape : {self.train.shape}')
+		print(f'Test Data shape : {self.test.shape}')
 	
 	def _auto_detect_target(self):
 		print(f'Auto Detecting Target...')

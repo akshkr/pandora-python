@@ -33,11 +33,12 @@ def color_null(val):
 	return f'color: {color}'
 
 
-def analyse(obj, path='analyzed_df.xlsx'):
+def analyse(obj, save=False, path='analyzed_df.xlsx'):
 	"""
 	Main analyser function to be called on a DataFrame or a Canvas object
 
 	:param obj: DataFrame or a Canvas object to be analysed
+	:param save: Save excel file
 	:param path:
 	"""
 	
@@ -74,7 +75,9 @@ def analyse(obj, path='analyzed_df.xlsx'):
 	
 	# Style the DataFrame and save in Excel format
 	styled_df = stylize(result_df, res)
-	styled_df.to_excel(path, engine='openpyxl', index=False)
+	
+	if save:
+		styled_df.to_excel(path, engine='openpyxl', index=False)
 	
 	return styled_df
 

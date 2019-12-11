@@ -2,7 +2,15 @@ import pandas as pd
 import numpy as np
 
 
-def reduce_mem_usage(df, verbose=True):
+def reduce_mem_usage(df):
+	"""
+	Reduces the size of the DataFrame by reducing the data type of the series
+	
+	Parameters
+	----------
+	df : DataFrame
+		DataFrame whose size is to be reduced
+	"""
 	numerals = ['int16', 'int32', 'int64', 'float16', 'float32', 'float64']
 	start_mem = df.memory_usage().sum() / 1024**2
 	for col in df.columns:
@@ -26,12 +34,12 @@ def reduce_mem_usage(df, verbose=True):
 					df[col] = df[col].astype(np.float32)
 				else:
 					df[col] = df[col].astype(np.float64)
+	
 	end_mem = df.memory_usage().sum() / 1024**2
-	if verbose:
-		print(
-			f'Mem. usage decreased to {end_mem.round(2)} Mb'
-			f' {(100 * (start_mem - end_mem) / start_mem).round(2)}% reduction)'
-		)
+	print(
+		f'Mem. usage decreased to {end_mem.round(2)} Mb'
+		f' {(100 * (start_mem - end_mem) / start_mem).round(2)}% reduction)'
+	)
 		
 	original_df = df.copy()
 	for col in df.columns:

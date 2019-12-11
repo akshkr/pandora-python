@@ -41,6 +41,7 @@ class Canvas(OPFrame):
 		
 		# If test data is present and target column is not defined,
 		# we try to auto detect target, if defined initialize directly
+		# There is no option for test data input with no target column
 		
 		# If test data is not present, initialize target from user input
 		# If no user input, warn that no target column is defined
@@ -60,10 +61,13 @@ class Canvas(OPFrame):
 				warnings.warn('No Target column defined')
 				self.target_column_name = None
 		
+		# NOTE: Make sure to reinitialize this variable if rows in training data decreases
 		# Get train size and validation size
 		self._train_size = len(self._train)
 		
-		# Join data and separate target
+		# Join train and test data
+		# The joined data contains target
+		# target series only contains values of train data
 		data, target = self._join_df()
 		
 		# Reduce memory usage of the data
@@ -162,7 +166,6 @@ class Canvas(OPFrame):
 		columns : list of columns
 			List of columns to drop from the data
 		"""
-		
 		self._data.drop(columns=columns, inplace=True)
 		
 	def merge_data(self, column_name, train_df, test_df=None):

@@ -93,6 +93,7 @@ def analyse(obj, save=False, path='analyzed_df.xlsx'):
 	column_list = list(data.columns)
 	
 	print(f'Number of records: {data.shape[0]}')
+	print(data.head())
 	
 	# Grouping column list according to their similar names
 	# Groups are split if their starting consecutive alphabets are same (Case Sensitive)

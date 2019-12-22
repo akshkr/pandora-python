@@ -52,6 +52,7 @@ def reduce_mem_usage(df):
 
 def make_balanced_df(df, target, factor):
 	"""
+	DEPRECATED
 	
 	:param df:
 	:param target:

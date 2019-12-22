@@ -1,3 +1,4 @@
+from sketch.core.elementary import count_remove
 import numpy as np
 
 
@@ -27,8 +28,5 @@ class NFrame:
 		"""
 		
 		for column in columns:
-			valid_card = self._data[column].value_counts()
-			valid_card = valid_card[valid_card >= min_count]
-			valid_card = list(valid_card.index)
 			
-			self._data[column] = np.where(self._data[column].isin(valid_card), self._data[column], np.nan)
+			self._data[column] = count_remove(self._data, column, min_count)

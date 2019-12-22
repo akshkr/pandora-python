@@ -1,4 +1,4 @@
-from sketch.util.dfhandler import reduce_mem_usage
+from sketch.core.memory import reduce_mem_usage
 from sketch.frame.operation import OPFrame
 import pandas as pd
 import warnings
@@ -43,6 +43,7 @@ class Canvas(OPFrame):
 		# we try to auto detect target, if defined initialize directly
 		# There is no option for test data input with no target column
 		
+		# INITIALIZE TARGET_COLUMN_NAME
 		# If test data is not present, initialize target from user input
 		# If no user input, warn that no target column is defined
 		if test is not None:
@@ -68,7 +69,7 @@ class Canvas(OPFrame):
 		# Join train and test data
 		# The joined data contains target
 		# target series only contains values of train data
-		data, target = self._join_df()
+		data = self._join_df()
 		
 		# Reduce memory usage of the data
 		if reduce_memory:
@@ -113,10 +114,10 @@ class Canvas(OPFrame):
 			
 			data = pd.concat([self._train, self._test], axis=0)
 			
-			return data, self._train[self.target_column_name]
+			return data
 		else:
 			# When no test data given
-			return self._train, self._train[self.target_column_name]
+			return self._train
 	
 	@property
 	def train(self):

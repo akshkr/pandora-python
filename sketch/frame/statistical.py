@@ -1,3 +1,4 @@
+from sketch.core.encode import dummy_encoder, label_encoder, frequency_encoder
 import pandas as pd
 import warnings
 
@@ -27,12 +28,7 @@ class STFrame:
 		drop : boolean
 			If true drops the original columns after encoding
 		"""
-		encoded_data = pd.get_dummies(self._data[columns])
-		
-		if drop:
-			self._data = pd.concat([self._data.drop(columns=columns), encoded_data], axis=1)
-		else:
-			self._data = pd.concat([self._data, encoded_data], axis=1)
+		self._data = dummy_encoder(self._data, columns, drop)
 	
 	def label_encode(self, columns=None, label='unknown', all_cols=False, verbose=False):
 		"""
@@ -65,22 +61,9 @@ class STFrame:
 		if verbose:
 			print(f'Columns being encoded : {columns}')
 		
-		from sklearn.preprocessing import LabelEncoder
-		label_encoder = LabelEncoder()
-		
-		# Handling Nan values
-		print(f'filling NaN values with label "{label}"')
-		self._data[columns].fillna(label, inplace=True)
-		self._data[columns] = self._data[columns].astype(str)
-		
-		# Encoding using Label Encoder
-		for col in columns:
-			self._data[col] = label_encoder.fit_transform(self._data[col])
-		
-		# Converting the data type to categorical
-		self._data[columns] = self._data[columns].astype('category')
+		self._data = label_encoder(self._data, columns, label)
 	
-	def frequency_encode(self, columns, verbose=False, drop=False):
+	def frequency_encode(self, columns, drop=False):
 		"""
 		Encodes columns using Frequency encoding
 
@@ -88,22 +71,11 @@ class STFrame:
 		----------
 		columns : List of string
 			List of columns to encode
-		verbose : boolean, default False
-			If True prints the value assigned to a label
 		drop : boolean, default False
 			If True drops the original columns after encoding
 		"""
+		self._data = frequency_encoder(self._data, columns, drop)
 		
-		for col in columns:
-			col_encoded = self._data[col].value_counts().to_dict()
-			self._data[f'{col}_freq_enc'] = self._data[col].map(col_encoded)
-			
-			if verbose:
-				print(f'Encoded columns {col} as : {col_encoded}')
-		
-		if drop:
-			self._data.drop(columns=columns, inplace=True)
-	
 	def map_dict(self, columns, map_dictionary):
 		"""
 		Maps the column using dictionary
@@ -127,7 +99,7 @@ class STFrame:
 		columns : List of strings
 			List of columns to be normalised
 		"""
-		from sketch.util.mathematics import min_max_scale
+		from sketch.core.scale import min_max_scale
 		
 		for col in columns:
 			self._data[col] = min_max_scale(self._data, col)

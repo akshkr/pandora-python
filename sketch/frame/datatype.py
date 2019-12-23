@@ -26,7 +26,7 @@ class DTFrame:
 		start_date = datetime.datetime.strptime('2017-11-30', '%Y-%m-%d')
 
 		self._data['dt'] = self._data[column_name].apply(lambda x: start_date + datetime.timedelta(seconds=x))
-		
+		self._data['dt'].str.count()
 		self._data[f'{column_name}_m'] = (self._data['dt'].dt.year - 2017) * 12 + self._data['dt'].dt.month
 		self._data[f'{column_name}_w'] = (self._data['dt'].dt.year - 2017) * 52 + self._data['dt'].dt.weekofyear
 		self._data[f'{column_name}_d'] = (self._data['dt'].dt.year - 2017) * 365 + self._data['dt'].dt.dayofyear

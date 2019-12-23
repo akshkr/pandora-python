@@ -45,3 +45,11 @@ def null_percentage(df, result_df):
 	
 	result_df['Null_Percentage'] = result_df['Columns'].apply(lambda x: (1 - df[x].count()/len(df)).round(3))
 	return result_df
+
+
+def repeat_percentage(df, result_df):
+	"""
+	
+	"""
+	result_df['Repeat_percentage'] = result_df['Columns'].apply(lambda x: df[x].nunique()).round(3)
+	return result_df

@@ -1,5 +1,4 @@
 from sketch.core.elementary import count_remove
-import numpy as np
 
 
 class NFrame:

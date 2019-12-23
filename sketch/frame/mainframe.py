@@ -1,10 +1,11 @@
 from sketch.core.memory import reduce_mem_usage
 from sketch.frame.operation import OPFrame
+from sketch.frame.relation import RTFrame
 import pandas as pd
 import warnings
 
 
-class Canvas(OPFrame):
+class Canvas(OPFrame, RTFrame):
 	"""
 	Frame with functionality to preprocess large train and test data clubbed
 	together. This frame is compatible with various models and analysing tools
@@ -76,6 +77,7 @@ class Canvas(OPFrame):
 			data = reduce_mem_usage(data)
 			
 		OPFrame.__init__(self, data)
+		RTFrame.__init__(self)
 		
 		print(f'Train Data shape : {self.train.shape}')
 		print(f'Test Data shape : {self.test.shape}')
@@ -143,6 +145,16 @@ class Canvas(OPFrame):
 			return self._data.iloc[:self._train_size][self.target_column_name]
 		else:
 			raise NameError(f'Target column is not defined while initialising Canvas object')
+		
+	@property
+	def train_df(self):
+		"""
+		Returns the training data
+		
+		Returns
+		-------
+		Return the training data with the target column"""
+		return self._data.iloc[:self._train_size]
 	
 	@property
 	def test(self):

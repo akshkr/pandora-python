@@ -1,5 +1,5 @@
 from sketch.util.analyser.distribution import data_distribution
-from sketch.util.analyser.distribution import null_percentage
+from sketch.util.analyser.distribution import null_percentage, repeat_percentage
 from sketch.frame.mainframe import Canvas
 from itertools import groupby
 import pandas as pd
@@ -114,6 +114,7 @@ def analyse(obj, save=False, path='analyzed_df.xlsx'):
 		*result_df['Columns'].map(lambda x: data_distribution(data[x])))
 	
 	result_df = null_percentage(data, result_df)
+	result_df = repeat_percentage(data, result_df)
 	
 	# Style the DataFrame and save in Excel format
 	styled_df = _stylize(result_df, res)

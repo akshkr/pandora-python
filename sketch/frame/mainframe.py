@@ -1,11 +1,9 @@
 from sketch.core.memory import reduce_mem_usage
-from sketch.frame.operation import OPFrame
-from sketch.frame.relation import RTFrame
 import pandas as pd
 import warnings
 
 
-class Canvas(OPFrame, RTFrame):
+class Canvas:
 	"""
 	Frame with functionality to preprocess large train and test data clubbed
 	together. This frame is compatible with various models and analysing tools
@@ -70,15 +68,12 @@ class Canvas(OPFrame, RTFrame):
 		# Join train and test data
 		# The joined data contains target
 		# target series only contains values of train data
-		data = self._join_df()
+		self._data = self._join_df()
 		
 		# Reduce memory usage of the data
 		if reduce_memory:
-			data = reduce_mem_usage(data)
+			self._data = reduce_mem_usage(self._data)
 			
-		OPFrame.__init__(self, data)
-		RTFrame.__init__(self)
-		
 		print(f'Train Data shape : {self.train.shape}')
 		print(f'Test Data shape : {self.test.shape}')
 	
@@ -122,7 +117,7 @@ class Canvas(OPFrame, RTFrame):
 			return self._train
 	
 	@property
-	def train(self):
+	def features(self):
 		"""
 		Returns the training data
 		
@@ -147,7 +142,7 @@ class Canvas(OPFrame, RTFrame):
 			raise NameError(f'Target column is not defined while initialising Canvas object')
 		
 	@property
-	def train_df(self):
+	def data(self):
 		"""
 		Returns the training data
 		
@@ -181,7 +176,7 @@ class Canvas(OPFrame, RTFrame):
 		"""
 		self._data.drop(columns=columns, inplace=True)
 		
-	def merge_data(self, column_name, train_df, test_df=None):
+	def merge_data(self, column_name, train_df, test_df=None, how='left'):
 		"""
 		Merge additional DataFrame to the Canvas object
 		
@@ -193,10 +188,12 @@ class Canvas(OPFrame, RTFrame):
 			Additional DataFrame of training data
 		test_df : DataFrame
 			Additional DataFrame of test data
+		how : String
+			Type of join
 		"""
 		if test_df is not None:
 			merge_df = pd.concat([train_df, test_df], axis=0)
 		else:
 			merge_df = train_df
 		
-		self._data = self._data.merge(merge_df, on=[column_name], how='left')
+		self._data = self._data.merge(merge_df, on=[column_name], how=how)

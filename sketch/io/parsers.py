@@ -1,7 +1,7 @@
 import pandas as pd
 
 
-def outline(df1, df2=None, target_column_name=None, reduce_memory=False):
+def make_data(df1, df2=None, target_column_name=None, reduce_memory=False):
 	"""
 	Makes a canvas object instance
 	

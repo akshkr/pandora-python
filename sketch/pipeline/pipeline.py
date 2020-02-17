@@ -1,5 +1,7 @@
 from .handler import handle_transformer, validate_transformer, handle_estimator
+from sketch.models.accuracy_score import binary_classification_accuracy
 from sketch.util.dataframe import validate_column_names
+from sketch.util.datatype import convert_to_numpy
 from joblib import Parallel, delayed
 import numpy as np
 
@@ -46,14 +48,17 @@ class Pipeline:
 		pkey, estimators, columns, params = zip(*self._steps[:-1])
 		validate_column_names(features.columns, columns)
 		
-		transformed_features = Parallel(n_jobs=n_jobs, backend='threading')\
+		transformed_features = Parallel(n_jobs=n_jobs, backend='multiprocessing')\
 			(delayed(handle_transformer)(*i) for i in zip(
 				[self]*len(estimators), [features]*len(estimators), pkey, estimators, columns, params))
 		
-		transformed_features = np.concatenate(transformed_features, axis=1)
+		transformed_features = convert_to_numpy(transformed_features)
+		# print([x.shape[1] for x in transformed_features])
+		transformed_features = np.hstack(transformed_features)
 		pkey, estimator, param = self._steps[-1]
 		
-		self._model = handle_estimator(self, estimator, pkey, transformed_features, target, params)
+		# self._model = handle_estimator(
+		# 	self, estimator, pkey, transformed_features, target, params, binary_classification_accuracy)
 		
 	def fit(self, features, target, n_jobs=None):
 		"""
@@ -61,8 +66,8 @@ class Pipeline:
 		Returns:
 
 		"""
-		result = self._fit(features, target, n_jobs)
-		return result
+		self._fit(features, target, n_jobs)
+		# return result
 	
 	def predict(self):
 		pass

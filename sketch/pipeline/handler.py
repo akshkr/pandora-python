@@ -51,7 +51,7 @@ def validate_transformer(transformers, inner_list=False):
 					f"{t} {type(t)} doesnt")
 	
 			
-def handle_estimator(obj, estimator, pkey, features, target, params):
+def handle_estimator(obj, estimator, pkey, features, target, params, accuracy_func):
 	"""
 	
 	Args:
@@ -61,11 +61,12 @@ def handle_estimator(obj, estimator, pkey, features, target, params):
 		features:
 		target:
 		params:
+		accuracy_func:
 
 	Returns:
 
 	"""
 	# n_splits, model_class, model_args, train_df, target, accuracy_check
-	model = kfold_validation(4, model_class=estimator, model_args={}, features=features, target=target)
-	
+	model = kfold_validation(4, model_class=estimator, model_args={}, features=features, target=target, accuracy_check=accuracy_func)
+	obj[pkey] = model
 	return model

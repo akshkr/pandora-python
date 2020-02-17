@@ -1,7 +1,5 @@
 # General Imports
-from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
-import modin.pandas as mpd
 from time import time
 import seaborn as sns
 import pandas as pd

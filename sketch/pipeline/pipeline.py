@@ -1,5 +1,5 @@
 from sketch.util.dataframe import validate_column_names
-from sketch.util.transformer import transform
+from .handler import handle_transformer, validate_transformer
 from joblib import Parallel, delayed
 
 
@@ -23,16 +23,7 @@ class Pipeline:
 		pkey, transformers, _, _ = zip(*self._steps[:-1])
 		_, estimator, _ = self._steps[-1]
 		
-		for t in transformers:
-			if callable(t):
-				pass
-			else:
-				if not (hasattr(t, "fit") or hasattr(t, "fit_transform")) or \
-					not hasattr(t, "transform"):
-					raise TypeError(
-						f"All intermediate steps should be "
-						f"transformers and implement fit and transform "
-						f"{t} {type(t)} doesnt")
+		validate_transformer(transformers)
 		
 		if not hasattr(estimator, "fit"):
 			raise TypeError(
@@ -54,7 +45,9 @@ class Pipeline:
 		validate_column_names(features.columns, columns)
 		
 		result = Parallel(n_jobs=n_jobs, backend='threading')\
-			(delayed(transform)(i for i in zip([features]*len(estimators), estimators, columns, params)))
+			(delayed(handle_transformer)(*i) for i in zip([features]*len(estimators), estimators, columns, params))
+		
+		return result
 		
 	def fit(self, features, target, n_jobs=None):
 		"""
@@ -62,7 +55,8 @@ class Pipeline:
 		Returns:
 
 		"""
-		self._fit(features, target, n_jobs)
+		result = self._fit(features, target, n_jobs)
+		return result
 	
 	def predict(self):
 		pass

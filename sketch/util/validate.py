@@ -1,7 +1,7 @@
 from sklearn.model_selection import KFold
 
 
-def make_prediction(n_splits, model_class, model_args, train_df, target, accuracy_check):
+def kfold_validation(n_splits, model_class, model_args, train_df, target, accuracy_check):
 	"""
 	Make Prediction
 	
@@ -34,7 +34,9 @@ def make_prediction(n_splits, model_class, model_args, train_df, target, accurac
 		validation_prediction = model.predict(validation_x)
 		
 		accuracy_check(validation_y, validation_prediction)
+		del model
 	
+	# Return the model after training on the entire data
 	model = model_class(**model_args)
 	model.fit(train_df, target)
 	return model

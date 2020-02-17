@@ -1,4 +1,4 @@
-from sketch.core.memory import reduce_mem_usage
+from sketch.util.memory import reduce_mem_usage
 import pandas as pd
 import warnings
 

@@ -1,6 +1,7 @@
+from .handler import handle_transformer, validate_transformer, handle_estimator
 from sketch.util.dataframe import validate_column_names
-from .handler import handle_transformer, validate_transformer
 from joblib import Parallel, delayed
+import numpy as np
 
 
 class Pipeline:
@@ -13,6 +14,7 @@ class Pipeline:
 		"""
 		self._steps = steps
 		self._validate_steps()
+		self.model = dict()
 
 	def _validate_steps(self):
 		"""
@@ -44,10 +46,14 @@ class Pipeline:
 		pkey, estimators, columns, params = zip(*self._steps[:-1])
 		validate_column_names(features.columns, columns)
 		
-		result = Parallel(n_jobs=n_jobs, backend='threading')\
-			(delayed(handle_transformer)(*i) for i in zip([features]*len(estimators), estimators, columns, params))
+		transformed_features = Parallel(n_jobs=n_jobs, backend='threading')\
+			(delayed(handle_transformer)(*i) for i in zip(
+				[self]*len(estimators), [features]*len(estimators), pkey, estimators, columns, params))
 		
-		return result
+		transformed_features = np.concatenate(transformed_features, axis=1)
+		pkey, estimator, param = self._steps[-1]
+		
+		self._model = handle_estimator(self, estimator, pkey, transformed_features, target, params)
 		
 	def fit(self, features, target, n_jobs=None):
 		"""

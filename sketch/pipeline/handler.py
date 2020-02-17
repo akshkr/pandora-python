@@ -1,11 +1,14 @@
+from sketch.util.validate import kfold_validation
 import inspect
 
 
-def handle_transformer(df, transformer, column, params):
+def handle_transformer(obj, df, pkey, transformer, column, params):
 	"""
 	
 	Args:
+		obj:
 		df:
+		pkey:
 		transformer:
 		column:
 		params:
@@ -17,10 +20,21 @@ def handle_transformer(df, transformer, column, params):
 		return transformer(df[column], **params)
 	else:
 		t = transformer
-		return t.fit_transform(df[column])
+		values = t.fit_transform(df[column])
+		obj.model[pkey] = t
+		return values
 	
 	
 def validate_transformer(transformers, inner_list=False):
+	"""
+	
+	Args:
+		transformers:
+		inner_list:
+
+	Returns:
+
+	"""
 	for t in transformers:
 		if callable(t):
 			pass
@@ -35,3 +49,23 @@ def validate_transformer(transformers, inner_list=False):
 					f"All intermediate steps should be "
 					f"transformers and implement fit and transform "
 					f"{t} {type(t)} doesnt")
+	
+			
+def handle_estimator(obj, estimator, pkey, features, target, params):
+	"""
+	
+	Args:
+		obj:
+		estimator:
+		pkey:
+		features:
+		target:
+		params:
+
+	Returns:
+
+	"""
+	# n_splits, model_class, model_args, train_df, target, accuracy_check
+	model = kfold_validation(4, model_class=estimator, model_args={}, features=features, target=target)
+	
+	return model

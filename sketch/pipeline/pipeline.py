@@ -53,12 +53,11 @@ class Pipeline:
 				[self]*len(estimators), [features]*len(estimators), pkey, estimators, columns, params))
 		
 		transformed_features = convert_to_numpy(transformed_features)
-		# print([x.shape[1] for x in transformed_features])
 		transformed_features = np.hstack(transformed_features)
-		pkey, estimator, param = self._steps[-1]
 		
-		# self._model = handle_estimator(
-		# 	self, estimator, pkey, transformed_features, target, params, binary_classification_accuracy)
+		pkey, estimator, param = self._steps[-1]
+		self._model = handle_estimator(
+			self, estimator, pkey, transformed_features, target, params, binary_classification_accuracy)
 		
 	def fit(self, features, target, n_jobs=None):
 		"""

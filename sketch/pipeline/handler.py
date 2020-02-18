@@ -68,5 +68,5 @@ def handle_estimator(obj, estimator, pkey, features, target, params, accuracy_fu
 	"""
 	# n_splits, model_class, model_args, train_df, target, accuracy_check
 	model = kfold_validation(4, model_class=estimator, model_args={}, features=features, target=target, accuracy_check=accuracy_func)
-	obj[pkey] = model
+	obj.model[pkey] = model
 	return model

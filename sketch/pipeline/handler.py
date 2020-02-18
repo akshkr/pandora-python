@@ -1,7 +1,8 @@
 from sketch.util.validate import kfold_validation
+from sketch.util.transformation import transform, fit_transform
 
 
-def handle_transformer(obj, df, pkey, transformer, column, params):
+def handle_transformer(obj, df, pkey, transformer, column, params, test=False):
 	"""
 	Handle transformations
 	
@@ -12,18 +13,21 @@ def handle_transformer(obj, df, pkey, transformer, column, params):
 		transformer (object): Object of transformer class
 		column (str): Column name to transform
 		params (dict): parameters to pass in a function
+		test (bool): True if the Method
 
 	Returns:
 		Transformed values according to the transformer
 	"""
-	if callable(transformer):
-		return transformer(df[column], **params)
+	if test:
+		transformer_obj = obj.model[pkey]
+		prediction_values, _ = transform(df, transformer_obj, column, params)
 	else:
-		t = transformer
-		values = t.fit_transform(df[column])
-		obj.model[pkey] = t
-		return values
-	
+		prediction_values, model = fit_transform(df, transformer, column, params)
+		if model is not None:
+			obj.model[pkey] = model
+			
+	return prediction_values
+		
 	
 def validate_transformer(transformers, transformer_list=False):
 	"""
@@ -49,8 +53,9 @@ def validate_transformer(transformers, transformer_list=False):
 					f"{t} {type(t)} doesnt")
 	
 			
-def handle_estimator(obj, estimator, pkey, features, target, params, accuracy_func):
+def handle_estimator(obj, estimator, pkey, features, target, params, accuracy_func, test=False):
 	"""
+	Handling estimator with validation
 	
 	Args:
 		obj (object): Pipeline object
@@ -60,13 +65,22 @@ def handle_estimator(obj, estimator, pkey, features, target, params, accuracy_fu
 		target (pd.Series): Dependent variable
 		params (dict): Parameters
 		accuracy_func (function): function to check accuracy and validate
+		test (bool): True is estimating for test set
 
 	Returns:
 		model
 	"""
-	model = kfold_validation(
-		4, model_class=estimator, model_args={}, features=features,
-		target=target, accuracy_check=accuracy_func)
 	
-	obj.model[pkey] = model
-	return model
+	if test:
+		estimator = obj.model[pkey]
+		print(type(features))
+		print(features)
+		return estimator.predict(features)
+	
+	else:
+		model = kfold_validation(
+			4, model_class=estimator, model_args={}, features=features,
+			target=target, accuracy_check=accuracy_func)
+		
+		obj.model[pkey] = model
+		return model

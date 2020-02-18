@@ -61,6 +61,29 @@ class Pipeline:
 			self, estimator, pkey, transformed_features, target, params,
 			binary_classification_accuracy)
 		
+	def _predict(self, features, n_jobs):
+		pkey, estimators, columns, params = zip(*self._steps[:-1])
+		
+		# Check for columns in the DataFrame
+		validate_column_names(features.columns, columns)
+		
+		# Transform features using parallelization
+		transformed_features = Parallel(n_jobs=n_jobs, backend='multiprocessing') \
+			(delayed(handle_transformer)(*i) for i in zip(
+				[self] * len(estimators), [features] * len(estimators), pkey,
+				[None]*len(estimators), columns, params, [True] * len(estimators)))
+		
+		# Convert every feature to numpy array and concatenate
+		transformed_features = convert_to_numpy(transformed_features)
+		transformed_features = np.hstack(transformed_features)
+		
+		# Use estimator
+		pkey, _, param = self._steps[-1]
+		prediction = handle_estimator(
+			self, None, pkey, transformed_features, None, params,
+			binary_classification_accuracy, True)
+		return prediction
+		
 	def fit(self, features, target, n_jobs=None):
 		"""
 		Train the model using the transformations and estimator
@@ -71,10 +94,21 @@ class Pipeline:
 			n_jobs (int): Number of jobs to parallelize transformations
 
 		Returns:
-
+			Pipeline object
 		"""
 		self._fit(features, target, n_jobs)
-		# return result
+		return self
 	
-	def predict(self):
-		pass
+	def predict(self, features, n_jobs=None):
+		"""
+		Test the model using transformation and estimator
+		
+		Args:
+			features (pd.DataFrame): Independent variable of test data
+			n_jobs (int): Number of jobs to parallelize transformations
+			
+		Returns:
+			predictions
+		"""
+		predictions = self._predict(features, n_jobs)
+		return predictions

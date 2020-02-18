@@ -43,7 +43,7 @@ def reduce_mem_usage(df):
 	original_df = df.copy()
 	for col in df.columns:
 		if df[col].dtype != 'O':
-			if (df[col] - original_df[col]).sum()!=0:
+			if (df[col] - original_df[col]).sum() != 0:
 				df[col] = original_df[col]
 				print(f'Bad transformation of {col}. Reverting...')
 	return df

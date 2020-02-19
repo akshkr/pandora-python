@@ -18,10 +18,32 @@ def handle_transformer(obj, df, pkey, transformer, column, params, test=False):
 	Returns:
 		Transformed values according to the transformer
 	"""
+	
+	# If the transformer is called for test data
 	if test:
-		transformer_obj = obj.model[pkey]
+		# Handle case of transformer being list
+		if isinstance(transformer, list):
+			for i in transformer[:-1]:
+				df[column], _ = transform(df, i, column, params)
+			# if callable(transformer[-1]):
+			# 	transformer_obj = transformer[-1]
+			# else:
+			transformer_obj = obj.model[pkey]
+			
+		# If transformer is function
+		elif callable(transformer):
+			transformer_obj = transformer
+			
+		# If transformer is Class
+		else:
+			transformer_obj = obj.model[pkey]
 		prediction_values, _ = transform(df, transformer_obj, column, params)
 	else:
+		if isinstance(transformer, list):
+			for i in transformer[:-1]:
+				df[column], _ = fit_transform(df, i, column, params)
+			transformer = transformer[-1]
+			
 		prediction_values, model = fit_transform(df, transformer, column, params)
 		if model is not None:
 			obj.model[pkey] = model
@@ -73,8 +95,6 @@ def handle_estimator(obj, estimator, pkey, features, target, params, accuracy_fu
 	
 	if test:
 		estimator = obj.model[pkey]
-		print(type(features))
-		print(features)
 		return estimator.predict(features)
 	
 	else:

@@ -4,6 +4,7 @@ from sklearn.metrics import classification_report
 
 
 def binary_classification_accuracy(actual, pred):
+    
     print(f'Confusion matrix: \n{confusion_matrix(actual, pred)}')
     print(f'Accuracy score: \n{accuracy_score(actual, pred)}')
     print(f'Classification report: \n{classification_report(actual, pred)}')

@@ -39,7 +39,7 @@ class Pipeline:
 				f"Estimator names must be unique"
 				f"{pkey}")
 		
-	def _fit(self, features, target, n_jobs):
+	def _fit(self, features, target, n_jobs, k_fold):
 		pkey, estimators, columns, params = zip(*self._steps[:-1])
 		
 		# Check for columns in the DataFrame
@@ -59,7 +59,7 @@ class Pipeline:
 		pkey, estimator, param = self._steps[-1]
 		self._model = handle_estimator(
 			self, estimator, pkey, transformed_features, target, params,
-			binary_classification_accuracy)
+			binary_classification_accuracy, k_fold=k_fold)
 		
 	def _predict(self, features, n_jobs):
 		pkey, estimators, columns, params = zip(*self._steps[:-1])
@@ -81,10 +81,10 @@ class Pipeline:
 		pkey, _, param = self._steps[-1]
 		prediction = handle_estimator(
 			self, None, pkey, transformed_features, None, params,
-			binary_classification_accuracy, True)
+			binary_classification_accuracy, test=True)
 		return prediction
 		
-	def fit(self, features, target, n_jobs=None):
+	def fit(self, features, target, n_jobs=None, k_fold=None):
 		"""
 		Train the model using the transformations and estimator
 
@@ -92,11 +92,12 @@ class Pipeline:
 			features (pd.DataFrame): Independent variable of training data
 			target (pd.Series): Dependent variable of training data
 			n_jobs (int): Number of jobs to parallelize transformations
+			k_fold (int): Number of fold validation
 
 		Returns:
 			Pipeline object
 		"""
-		self._fit(features, target, n_jobs)
+		self._fit(features, target, n_jobs, k_fold)
 		return self
 	
 	def predict(self, features, n_jobs=None):

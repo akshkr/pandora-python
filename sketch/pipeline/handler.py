@@ -2,7 +2,40 @@ from sketch.util.validate import kfold_validation
 from sketch.util.transformation import transform, fit_transform
 
 
-def handle_transformer(obj, df, pkey, transformer, column, params, test=False):
+def handle_train_transformer(obj, df, pkey, transformer, column, params):
+	"""
+		Handle transformations
+
+		Args:
+			obj (object): Object to store model
+			df (pd.DataFrame): training DataFrame
+			pkey (str): Primary key to store model in obj
+			transformer (object): Object of transformer class
+			column (str): Column name to transform
+			params (dict): parameters to pass in a function
+			test (bool): True if the Method
+
+		Returns:
+			Transformed values according to the transformer
+		"""
+	try:
+		if isinstance(transformer, list):
+			for i in transformer[:-1]:
+				df[column], _ = fit_transform(df, i, column, params)
+			transformer = transformer[-1]
+		
+		prediction_values, model = fit_transform(df, transformer, column, params)
+		if model is not None:
+			obj.model[pkey] = model
+			
+		return prediction_values
+	
+	except Exception as ex:
+		print(f'Exception encountered in {transformer} column {column}')
+		raise ex
+
+
+def handle_test_transformer(obj, df, pkey, transformer, column, params):
 	"""
 	Handle transformations
 	
@@ -18,39 +51,25 @@ def handle_transformer(obj, df, pkey, transformer, column, params, test=False):
 	Returns:
 		Transformed values according to the transformer
 	"""
-	
 	try:
-		# If the transformer is called for test data
-		if test:
-			# Handle case of transformer being list
-			if isinstance(transformer, list):
-				for i in transformer[:-1]:
-					df[column], _ = transform(df, i, column, params)
-				if callable(transformer[-1]):
-					transformer_obj = transformer[-1]
-				else:
-					transformer_obj = obj.model[pkey]
-				
-			# If transformer is function
-			elif callable(transformer):
-				transformer_obj = transformer
-				
-			# If transformer is Class
+		# Handle case of transformer being list
+		if isinstance(transformer, list):
+			for i in transformer[:-1]:
+				df[column], _ = transform(df, i, column, params)
+			if callable(transformer[-1]):
+				transformer_obj = transformer[-1]
 			else:
 				transformer_obj = obj.model[pkey]
-			prediction_values, _ = transform(df, transformer_obj, column, params)
+			
+		# If transformer is function
+		elif callable(transformer):
+			transformer_obj = transformer
+			
+		# If transformer is Class
 		else:
-			if isinstance(transformer, list):
-				for i in transformer[:-1]:
-					df[column], _ = fit_transform(df, i, column, params)
-				transformer = transformer[-1]
-				
-			prediction_values, model = fit_transform(df, transformer, column, params)
-			if model is not None:
-				obj.model[pkey] = model
-				
-		return prediction_values
-	
+			transformer_obj = obj.model[pkey]
+		prediction_values, _ = transform(df, transformer_obj, column, params)
+
 	except Exception as ex:
 		print(f'Exception encountered in {transformer} column {column}')
 		raise ex
@@ -72,6 +91,7 @@ def validate_transformer(transformers, transformer_list=False):
 			validate_transformer(t, transformer_list=True)
 			
 		else:
+			# The transformer must implement fit or fit_transform and transform
 			if not (hasattr(t, "fit") or hasattr(t, "fit_transform")) or \
 				not hasattr(t, "transform"):
 				raise TypeError(

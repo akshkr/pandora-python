@@ -1,4 +1,4 @@
-from .handler import handle_transformer, validate_transformer, handle_estimator
+from .handler import handle_train_transformer, handle_test_transformer, validate_transformer, handle_estimator
 from sketch.util.dataframe import validate_column_names
 from sketch.core.accuracy import binary_classification_accuracy
 from sketch.util.datatype import convert_to_numpy
@@ -47,7 +47,7 @@ class Pipeline:
 		
 		# Transform features using parallelization
 		transformed_features = Parallel(n_jobs=n_jobs, backend='multiprocessing')\
-			(delayed(handle_transformer)(*i) for i in zip(
+			(delayed(handle_train_transformer)(*i) for i in zip(
 				[self]*len(estimators), [features.copy()]*len(estimators), pkey,
 				estimators, columns, params))
 		
@@ -69,9 +69,9 @@ class Pipeline:
 		
 		# Transform features using parallelization
 		transformed_features = Parallel(n_jobs=n_jobs, backend='multiprocessing')\
-			(delayed(handle_transformer)(*i) for i in zip(
+			(delayed(handle_test_transformer)(*i) for i in zip(
 				[self] * len(estimators), [features.copy()] * len(estimators), pkey,
-				estimators, columns, params, [True] * len(estimators)))
+				estimators, columns, params))
 		
 		# Convert every feature to numpy array and concatenate
 		transformed_features = convert_to_numpy(transformed_features)

@@ -1,5 +1,5 @@
-from sketch.util.validate import kfold_validation
-from sketch.util.transformation import transform, fit_transform
+from ..util.validate import kfold_validation
+from ..util.transformation import transform, fit_transform
 
 
 def handle_train_transformer(obj, df, pkey, transformer, column, params):
@@ -13,7 +13,6 @@ def handle_train_transformer(obj, df, pkey, transformer, column, params):
 			transformer (object): Object of transformer class
 			column (str): Column name to transform
 			params (dict): parameters to pass in a function
-			test (bool): True if the Method
 
 		Returns:
 			Transformed values according to the transformer
@@ -46,7 +45,6 @@ def handle_test_transformer(obj, df, pkey, transformer, column, params):
 		transformer (object): Object of transformer class
 		column (str): Column name to transform
 		params (dict): parameters to pass in a function
-		test (bool): True if the Method
 
 	Returns:
 		Transformed values according to the transformer

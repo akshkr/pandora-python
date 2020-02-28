@@ -1,7 +1,7 @@
 from .handler import handle_train_transformer, handle_test_transformer, validate_transformer, handle_estimator
-from sketch.util.dataframe import validate_column_names
-from sketch.core.accuracy import binary_classification_accuracy
-from sketch.util.datatype import convert_to_numpy
+from ..util.dataframe import validate_column_names
+from ..core.accuracy import binary_classification_accuracy
+from ..util.datatype import convert_to_numpy
 from joblib import Parallel, delayed
 import numpy as np
 

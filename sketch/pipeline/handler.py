@@ -1,5 +1,5 @@
-from ..util.validate import kfold_validation
 from ..util.transformation import transform, fit_transform
+from ..util.validate import kfold_validation
 
 
 def handle_train_transformer(obj, df, pkey, transformer, column, params):
@@ -72,32 +72,7 @@ def handle_test_transformer(obj, df, pkey, transformer, column, params):
 		print(f'Exception encountered in {transformer} column {column}')
 		raise ex
 		
-	
-def validate_transformer(transformers, transformer_list=False):
-	"""
-	Validate list of transformers
-	
-	Args:
-		transformers (list): List of transformers
-		transformer_list (bool): True is transformer is a list
-	"""
-	for t in transformers:
-		if callable(t):
-			pass
 		
-		elif isinstance(t, list) and not transformer_list:
-			validate_transformer(t, transformer_list=True)
-			
-		else:
-			# The transformer must implement fit or fit_transform and transform
-			if not (hasattr(t, "fit") or hasattr(t, "fit_transform")) or \
-				not hasattr(t, "transform"):
-				raise TypeError(
-					f"All intermediate steps should be "
-					f"transformers and implement fit and transform "
-					f"{t} {type(t)} doesnt")
-	
-			
 def handle_estimator(obj, estimator, pkey, features, target, params, accuracy_func, test=False, k_fold=None):
 	"""
 	Handling estimator with validation

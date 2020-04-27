@@ -1,7 +1,8 @@
-from .handler import handle_train_transformer, handle_test_transformer, validate_transformer, handle_estimator
-from ..util.dataframe import validate_column_names
+from .handler import handle_train_transformer, handle_test_transformer, handle_estimator
 from ..core.accuracy import binary_classification_accuracy
+from ..util.dataframe import validate_column_names
 from ..util.datatype import convert_to_numpy
+from .validator import validate_transformer
 from joblib import Parallel, delayed
 import numpy as np
 
@@ -40,7 +41,7 @@ class Pipeline:
 				f"{pkey}")
 		
 	def _fit(self, features, target, n_jobs, k_fold):
-		pkey, estimators, columns, params = zip(*self._steps[:-1])
+		pkey, transformers, columns, params = zip(*self._steps[:-1])
 		
 		# Check for columns in the DataFrame
 		validate_column_names(features.columns, columns)
@@ -48,8 +49,8 @@ class Pipeline:
 		# Transform features using parallelization
 		transformed_features = Parallel(n_jobs=n_jobs, backend='multiprocessing')\
 			(delayed(handle_train_transformer)(*i) for i in zip(
-				[self]*len(estimators), [features.copy()]*len(estimators), pkey,
-				estimators, columns, params))
+				[self]*len(transformers), [features.copy()]*len(transformers), pkey,
+				transformers, columns, params))
 		
 		# Convert every feature to numpy array and concatenate
 		transformed_features = convert_to_numpy(transformed_features)

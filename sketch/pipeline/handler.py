@@ -66,8 +66,11 @@ def handle_test_transformer(obj, df, pkey, transformer, column, params):
 		# If transformer is Class
 		else:
 			transformer_obj = obj.model[pkey]
-		prediction_values, _ = transform(df, transformer_obj, column, params)
-
+		
+		transformed_values, _ = transform(df, transformer_obj, column, params)
+		
+		return transformed_values
+	
 	except Exception as ex:
 		print(f'Exception encountered in {transformer} column {column}')
 		raise ex

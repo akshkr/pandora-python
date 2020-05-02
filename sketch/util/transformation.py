@@ -1,4 +1,4 @@
-def fit_transform(df, transformer, column, params):
+def fit_transform(df, transformer, column):
 	
 	if callable(transformer):
 		return df[column].apply(lambda x: transformer(x)), None
@@ -8,7 +8,7 @@ def fit_transform(df, transformer, column, params):
 		return values, t
 	
 
-def transform(df, transformer, column, params):
+def transform(df, transformer, column):
 	
 	if callable(transformer):
 		return df[column].apply(lambda x: transformer(x)), None

@@ -13,7 +13,7 @@ class Pipeline:
 		"""
 		Args:
 			steps (list): List of tuples containing transformers and estimators
-			Each tuple contains (pkey, estimator/transformer, column_name, params)
+			Each tuple contains (pkey, estimator/transformer, column_name)
 		"""
 		self._steps = steps
 		self.model = dict()
@@ -22,7 +22,7 @@ class Pipeline:
 		self._validate_steps()
 
 	def _validate_steps(self):
-		pkey, transformers, _, _ = zip(*self._steps[:-1])
+		pkey, transformers, _ = zip(*self._steps[:-1])
 		_, estimator, _ = self._steps[-1]
 		
 		# Validate transformer
@@ -41,38 +41,43 @@ class Pipeline:
 				f"{pkey}")
 		
 	def _fit(self, features, target, n_jobs, k_fold):
-		pkey, transformers, columns, params = zip(*self._steps[:-1])
+		pkey, transformers, columns = zip(*self._steps[:-1])
 		
 		# Check for columns in the DataFrame
-		validate_column_names(features.columns, columns)
+		validate_column_names(features, columns)
 		
 		# Transform features using parallelization
-		transformed_features = Parallel(n_jobs=n_jobs, backend='multiprocessing')\
+		features_and_models = Parallel(n_jobs=n_jobs, backend='multiprocessing')\
 			(delayed(handle_train_transformer)(*i) for i in zip(
-				[self]*len(transformers), [features.copy()]*len(transformers), pkey,
-				transformers, columns, params))
+				[features.copy()]*len(transformers), transformers, columns))
 		
+		transformed_features = list()
+		for p, model in zip(pkey, features_and_models):
+			self.model[p] = model[1]
+			transformed_features.append(model[0])
+			
 		# Convert every feature to numpy array and concatenate
 		transformed_features = convert_to_numpy(transformed_features)
 		transformed_features = np.hstack(transformed_features)
 		
 		# Use estimator
 		pkey, estimator, param = self._steps[-1]
-		self._model = handle_estimator(
-			self, estimator, pkey, transformed_features, target, params,
-			binary_classification_accuracy, k_fold=k_fold)
+		handle_estimator(
+			self, estimator, pkey, transformed_features, target,
+			binary_classification_accuracy, k_fold=k_fold
+		)
 		
 	def _predict(self, features, n_jobs):
-		pkey, estimators, columns, params = zip(*self._steps[:-1])
+		pkey, estimators, columns = zip(*self._steps[:-1])
 		
 		# Check for columns in the DataFrame
-		validate_column_names(features.columns, columns)
+		validate_column_names(features, columns)
 		
 		# Transform features using parallelization
 		transformed_features = Parallel(n_jobs=n_jobs, backend='multiprocessing')\
 			(delayed(handle_test_transformer)(*i) for i in zip(
 				[self] * len(estimators), [features.copy()] * len(estimators), pkey,
-				estimators, columns, params))
+				estimators, columns))
 		
 		# Convert every feature to numpy array and concatenate
 		transformed_features = convert_to_numpy(transformed_features)
@@ -81,7 +86,7 @@ class Pipeline:
 		# Use estimator
 		pkey, _, param = self._steps[-1]
 		prediction = handle_estimator(
-			self, None, pkey, transformed_features, None, params,
+			self, None, pkey, transformed_features, None,
 			binary_classification_accuracy, test=True)
 		return prediction
 		

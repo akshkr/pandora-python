@@ -2,17 +2,14 @@ from ..util.transformation import transform, fit_transform
 from ..util.validate import kfold_validation
 
 
-def handle_train_transformer(obj, df, pkey, transformer, column, params):
+def handle_train_transformer(df, transformer, column):
 	"""
 		Handle transformations
 
 		Args:
-			obj (object): Object to store model
 			df (pd.DataFrame): training DataFrame
-			pkey (str): Primary key to store model in obj
 			transformer (object): Object of transformer class
 			column (str): Column name to transform
-			params (dict): parameters to pass in a function
 
 		Returns:
 			Transformed values according to the transformer
@@ -20,21 +17,19 @@ def handle_train_transformer(obj, df, pkey, transformer, column, params):
 	try:
 		if isinstance(transformer, list):
 			for i in transformer[:-1]:
-				df[column], _ = fit_transform(df, i, column, params)
+				df[column], _ = fit_transform(df, i, column)
 			transformer = transformer[-1]
 		
-		prediction_values, model = fit_transform(df, transformer, column, params)
-		if model is not None:
-			obj.model[pkey] = model
-			
-		return prediction_values
+		transformed_values, model = fit_transform(df, transformer, column)
+		
+		return [transformed_values, model]
 	
 	except Exception as ex:
 		print(f'Exception encountered in {transformer} column {column}')
 		raise ex
 
 
-def handle_test_transformer(obj, df, pkey, transformer, column, params):
+def handle_test_transformer(obj, df, pkey, transformer, column):
 	"""
 	Handle transformations
 	
@@ -44,7 +39,6 @@ def handle_test_transformer(obj, df, pkey, transformer, column, params):
 		pkey (str): Primary key to store model in obj
 		transformer (object): Object of transformer class
 		column (str): Column name to transform
-		params (dict): parameters to pass in a function
 
 	Returns:
 		Transformed values according to the transformer
@@ -53,7 +47,7 @@ def handle_test_transformer(obj, df, pkey, transformer, column, params):
 		# Handle case of transformer being list
 		if isinstance(transformer, list):
 			for i in transformer[:-1]:
-				df[column], _ = transform(df, i, column, params)
+				df[column], _ = transform(df, i, column)
 			if callable(transformer[-1]):
 				transformer_obj = transformer[-1]
 			else:
@@ -67,7 +61,7 @@ def handle_test_transformer(obj, df, pkey, transformer, column, params):
 		else:
 			transformer_obj = obj.model[pkey]
 		
-		transformed_values, _ = transform(df, transformer_obj, column, params)
+		transformed_values, _ = transform(df, transformer_obj, column)
 		
 		return transformed_values
 	
@@ -76,7 +70,7 @@ def handle_test_transformer(obj, df, pkey, transformer, column, params):
 		raise ex
 		
 		
-def handle_estimator(obj, estimator, pkey, features, target, params, accuracy_func, test=False, k_fold=None):
+def handle_estimator(obj, estimator, pkey, features, target, accuracy_func, test=False, k_fold=None):
 	"""
 	Handling estimator with validation
 	
@@ -86,7 +80,6 @@ def handle_estimator(obj, estimator, pkey, features, target, params, accuracy_fu
 		pkey (str): Primary key to store model
 		features (np.ndarray): 2D numpy array of independent variables
 		target (pd.Series): Dependent variable
-		params (dict): Parameters
 		accuracy_func (function): function to check accuracy and validate
 		test (bool): True is estimating for test set
 		k_fold (int): Number of fold validation
@@ -109,4 +102,4 @@ def handle_estimator(obj, estimator, pkey, features, target, params, accuracy_fu
 		model = estimator
 		model.fit(features, target)
 		obj.model[pkey] = model
-		return model
+		# return model

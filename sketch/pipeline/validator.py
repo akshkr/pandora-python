@@ -1,17 +1,17 @@
-def validate_transformer(transformers, transformer_list=False):
+def validate_transformer(transformers, transformer_list_flag=False):
 	"""
 	Validate list of transformers
 
 	Args:
 		transformers (list): List of transformers
-		transformer_list (bool): True is transformer is a list
+		transformer_list_flag (bool): True is transformer is a list
 	"""
 	for t in transformers:
 		if callable(t):
 			pass
 		
-		elif isinstance(t, list) and not transformer_list:
-			validate_transformer(t, transformer_list=True)
+		elif isinstance(t, list) and not transformer_list_flag:
+			validate_transformer(t, transformer_list_flag=True)
 		
 		else:
 			# The transformer must implement fit or fit_transform and transform

@@ -5,10 +5,11 @@ def reduce_mem_usage(df):
 	"""
 	Reduces the size of the DataFrame by reducing the data type of the series
 	
-	Parameters
-	----------
-	df : DataFrame
-		DataFrame whose size is to be reduced
+	Args:
+		df (pd.DataFrame): DataFrame whose size is to be reduced
+
+	Returns:
+		DataFrame with reduced memory
 	"""
 	numerals = ['int16', 'int32', 'int64', 'float16', 'float32', 'float64']
 	start_mem = df.memory_usage().sum() / 1024**2

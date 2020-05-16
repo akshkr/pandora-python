@@ -1,4 +1,4 @@
-from .handler import handle_train_transformer, handle_test_transformer, handle_estimator
+from .handler import handle_train_transformer, handle_test_transformer, handle_test_estimator, handle_train_estimator
 from ..core.accuracy import binary_classification_accuracy
 from ..util.dataframe import validate_column_names
 from ..util.datatype import convert_to_numpy
@@ -62,7 +62,7 @@ class Pipeline:
 		
 		# Use estimator
 		pkey, estimator, param = self._steps[-1]
-		handle_estimator(
+		handle_train_estimator(
 			self, estimator, pkey, transformed_features, target,
 			binary_classification_accuracy, k_fold=k_fold
 		)
@@ -85,9 +85,7 @@ class Pipeline:
 		
 		# Use estimator
 		pkey, _, param = self._steps[-1]
-		prediction = handle_estimator(
-			self, None, pkey, transformed_features, None,
-			binary_classification_accuracy, test=True)
+		prediction = handle_test_estimator(self, pkey, transformed_features)
 		return prediction
 		
 	def fit(self, features, target, n_jobs=None, k_fold=None):

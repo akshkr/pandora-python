@@ -70,9 +70,9 @@ def handle_test_transformer(obj, df, pkey, transformer, column):
 		raise ex
 		
 		
-def handle_estimator(obj, estimator, pkey, features, target, accuracy_func, test=False, k_fold=None):
+def handle_train_estimator(obj, estimator, pkey, features, target, accuracy_func, k_fold=None):
 	"""
-	Handling estimator with validation
+	Handling estimator with validation for training
 	
 	Args:
 		obj (object): Pipeline object
@@ -81,25 +81,30 @@ def handle_estimator(obj, estimator, pkey, features, target, accuracy_func, test
 		features (np.ndarray): 2D numpy array of independent variables
 		target (pd.Series): Dependent variable
 		accuracy_func (function): function to check accuracy and validate
-		test (bool): True is estimating for test set
 		k_fold (int): Number of fold validation
+	"""
+	if k_fold is not None:
+		kfold_validation(
+			k_fold, model_obj=estimator, model_args={}, features=features,
+			target=target, accuracy_check=accuracy_func)
+	
+	# Return the model after training on the entire data
+	model = estimator
+	model.fit(features, target)
+	obj.model[pkey] = model
+	
+	
+def handle_test_estimator(obj, pkey, features):
+	"""
+	Handle estimator for test
+	
+	Args:
+		obj (object): Pipeline object
+		pkey (str): Primary key to store model
+		features (np.ndarray): 2D numpy array of independent variables
 
 	Returns:
-		model
+		predictions
 	"""
-	
-	if test:
-		estimator = obj.model[pkey]
-		return estimator.predict(features)
-	
-	else:
-		if k_fold is not None:
-			kfold_validation(
-				k_fold, model_obj=estimator, model_args={}, features=features,
-				target=target, accuracy_check=accuracy_func)
-		
-		# Return the model after training on the entire data
-		model = estimator
-		model.fit(features, target)
-		obj.model[pkey] = model
-		# return model
+	estimator = obj.model[pkey]
+	return estimator.predict(features)

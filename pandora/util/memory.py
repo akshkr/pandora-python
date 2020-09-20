@@ -1,7 +1,3 @@
-"""
-Functions for memory operations and optimization
-"""
-import pandas as pd
 import numpy as np
 
 
@@ -9,10 +5,11 @@ def reduce_mem_usage(df):
 	"""
 	Reduces the size of the DataFrame by reducing the data type of the series
 	
-	Parameters
-	----------
-	df : DataFrame
-		DataFrame whose size is to be reduced
+	Args:
+		df (pd.DataFrame): DataFrame whose size is to be reduced
+
+	Returns:
+		DataFrame with reduced memory
 	"""
 	numerals = ['int16', 'int32', 'int64', 'float16', 'float32', 'float64']
 	start_mem = df.memory_usage().sum() / 1024**2
@@ -47,33 +44,7 @@ def reduce_mem_usage(df):
 	original_df = df.copy()
 	for col in df.columns:
 		if df[col].dtype != 'O':
-			if (df[col] - original_df[col]).sum()!=0:
+			if (df[col] - original_df[col]).sum() != 0:
 				df[col] = original_df[col]
 				print(f'Bad transformation of {col}. Reverting...')
 	return df
-
-
-def make_balanced_df(df, target, factor):
-	"""
-	DEPRECATED
-	
-	:param df:
-	:param target:
-	:param factor:
-	:return:
-	"""
-	# Min and max value to make scale factor
-	max_value = df[target].value_counts().max()
-	min_value = df[target].value_counts().min()
-	
-	# Shuffling df and breaking
-	df = df.sample(frac=1)
-	
-	# Calculate scale factor and scale
-	scale_factor = int((max_value/min_value)*factor)
-	print(f'Balancing with factor : {scale_factor}')
-	replica = [df[df[target] == df[target].value_counts().argmin()]] * scale_factor
-	
-	balanced_df = pd.concat([df] + replica, axis=0)
-	balanced_df = balanced_df.sample(frac=1)
-	return balanced_df

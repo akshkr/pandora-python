@@ -1,1 +1,1 @@
-from .pipeline import Pipeline
+from .skeleton import Pipeline

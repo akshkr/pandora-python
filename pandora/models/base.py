@@ -6,7 +6,7 @@ class Model:
     def __init__(self):
         self.preprocessing_steps = list()
         self.transformer = None
-        self.evaluator = None
+        self.estimator = None
 
     @abstractmethod
     def add_preprocessor(self, *args, **kwargs):
@@ -15,5 +15,5 @@ class Model:
     def add_transformer(self, transformer):
         self.transformer = transformer
 
-    def add_model(self, evaluator=None):
-        self.evaluator = evaluator
+    def add_estimator(self, evaluator=None):
+        self.estimator = evaluator

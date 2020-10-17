@@ -4,7 +4,7 @@ from joblib import Parallel, delayed
 
 def train_and_validate(model_obj, features, target, train_idx, validation_idx, accuracy_check):
 	model = model_obj
-	model.fit(features[train_idx, :], target[train_idx])
+	model.run(features[train_idx, :], target[train_idx])
 	validation_prediction = model.predict(features[validation_idx, :])
 	accuracy_check(target[validation_idx], validation_prediction)
 	del model

@@ -8,7 +8,7 @@ class Pipeline(metaclass=ABCMeta):
 		raise NotImplementedError
 
 	@abstractmethod
-	def fit(self, *args, **kwargs):
+	def run(self, *args, **kwargs):
 		raise NotImplementedError
 
 	@abstractmethod

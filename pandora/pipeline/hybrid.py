@@ -8,7 +8,7 @@ class Hybrid(Pipeline):
     def add(self, *args, **kwargs):
         pass
 
-    def fit(self, *args, **kwargs):
+    def run(self, *args, **kwargs):
         pass
 
     def predict(self, *args, **kwargs):

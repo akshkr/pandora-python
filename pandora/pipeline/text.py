@@ -1,4 +1,4 @@
-from .skeleton import Pipeline
+from .base import Pipeline
 
 
 class Text(Pipeline):

@@ -7,12 +7,15 @@ class Image(Pipeline):
         model = 'image' if model is None else model
         self.model = get_model(model)
 
-    def add(self, function):
-        self.model.add_preprocessor(function)
+    def add(self, preprocessor):
+        self.model.add_preprocessor(preprocessor)
 
-    def run(self, transformer, estimator):
+    def compile(self, transformer, estimator):
         self.model.add_transformer(transformer)
         self.model.add_estimator(estimator)
+
+    def run(self, *args, **kwargs):
+        pass
 
     def predict(self, *args, **kwargs):
         pass

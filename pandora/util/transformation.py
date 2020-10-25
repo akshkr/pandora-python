@@ -1,18 +1,18 @@
-def fit_transform(df, transformer, column):
+def fit_transform(operator, vector):
 	
-	if callable(transformer):
-		return df[column].apply(lambda x: transformer(x)), None
+	if callable(operator):
+		return map(operator, vector)
 	else:
-		t = transformer
-		values = t.fit_transform(df[column])
+		t = operator
+		values = t.fit_transform(vector)
 		return values, t
 	
 
-def transform(df, transformer, column):
+def transform(operator, vector):
 	
-	if callable(transformer):
-		return df[column].apply(lambda x: transformer(x)), None
+	if callable(operator):
+		return map(operator, vector)
 	else:
-		t = transformer
-		values = t.transform(df[column])
-		return values, t
+		t = operator
+		values = t.transform(vector)
+		return values

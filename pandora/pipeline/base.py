@@ -8,6 +8,10 @@ class Pipeline(metaclass=ABCMeta):
 		raise NotImplementedError
 
 	@abstractmethod
+	def compile(self, *args, **kwargs):
+		raise NotImplementedError
+
+	@abstractmethod
 	def run(self, *args, **kwargs):
 		raise NotImplementedError
 

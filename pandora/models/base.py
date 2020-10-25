@@ -15,5 +15,5 @@ class Model:
     def add_transformer(self, transformer):
         self.transformer = transformer
 
-    def add_estimator(self, evaluator=None):
-        self.estimator = evaluator
+    def add_estimator(self, estimator):
+        self.estimator = estimator

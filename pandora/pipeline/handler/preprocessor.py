@@ -1,4 +1,4 @@
-from pandora.util.transformation import fit_transform
+from pandora.util.stages.transformation import fit_transform
 
 
 def handle_train_preprocessor(preprocessor, feature):
@@ -10,8 +10,8 @@ def handle_train_preprocessor(preprocessor, feature):
             preprocessor_list.append(operator)
         preprocessor = preprocessor[-1]
 
-    transformed_values, model = fit_transform(preprocessor, feature)
+    transformed_values, models = fit_transform(preprocessor, feature)
     if preprocessor_list:
-        model = [*preprocessor_list, model]
+        models = [*preprocessor_list, models]
 
-    return [transformed_values, model]
+    return [transformed_values, models]

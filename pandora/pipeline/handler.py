@@ -1,4 +1,4 @@
-from ..util.transformation import transform, fit_transform
+from pandora.util.stages.transformation import transform, fit_transform
 from ..util.validate import kfold_validation
 
 

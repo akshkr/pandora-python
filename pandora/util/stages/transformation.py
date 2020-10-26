@@ -1,7 +1,7 @@
 def fit_transform(operator, vector):
-	
 	if callable(operator):
-		return map(operator, vector)
+		return map(operator, vector), operator
+
 	else:
 		t = operator
 		values = t.fit_transform(vector)
@@ -9,9 +9,9 @@ def fit_transform(operator, vector):
 	
 
 def transform(operator, vector):
-	
 	if callable(operator):
 		return map(operator, vector)
+
 	else:
 		t = operator
 		values = t.transform(vector)

@@ -1,7 +1,9 @@
-from .handler import handle_train_preprocessor
+from ..util.datatype import convert_to_numpy
 from ..util.process import parallelize
 from ..factory import get_model
 from .base import Pipeline
+from .handler import *
+import numpy as np
 
 
 class TextPipeline(Pipeline):
@@ -23,13 +25,25 @@ class TextPipeline(Pipeline):
         self.model.add_transformer(transformer)
         self.model.add_estimator(estimator)
 
-    def run(self, data):
-        preprocessors, features = self._extract_feature_array(data)
-        parallelize(
-            handle_train_preprocessor,
-            [preprocessors, features],
-            n_jobs=4
-        )
+    def run(self, features, target):
+        if self.model.preprocessing_steps:
+            preprocessors, features = self._extract_feature_array(features)
+            features, models = parallelize(
+                handle_train_preprocessor,
+                zip(preprocessors, features),
+                n_jobs=1
+            )
+
+            features = convert_to_numpy(features)
+            features = np.hstack(features)
+
+        if self.model.transformer:
+            pass
+
+        if self.model.estimator:
+            handle_train_estimator(self.model.estimator, features, target)
+
+        return features
 
     def predict(self, *args, **kwargs):
         pass

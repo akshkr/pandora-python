@@ -23,5 +23,8 @@ def convert_to_numpy(list_to_convert):
 			
 		elif isinstance(i, csr_matrix):
 			return_list.append(i.toarray())
+
+		else:
+			raise TypeError(f'Unsupported Datatype')
 	
 	return return_list

@@ -1,9 +1,9 @@
-from .base import Model
+from .base import Template
 
 
-class ImageModel(Model):
+class ImageTemplate(Template):
     def __init__(self):
-        super(ImageModel, self).__init__()
+        super(ImageTemplate, self).__init__()
 
     def add_preprocessor(self, preprocessor):
         self.preprocessing_steps.append(preprocessor)

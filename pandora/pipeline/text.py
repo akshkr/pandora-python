@@ -1,6 +1,6 @@
 from ..util.datatype import convert_to_numpy
 from ..util.process import parallelize
-from ..factory import get_model
+from ..factory import get_template
 from .base import Pipeline
 from .handler import *
 import numpy as np
@@ -9,7 +9,7 @@ import numpy as np
 class TextPipeline(Pipeline):
     def __init__(self, model=None):
         model = 'text' if model is None else model
-        self.model = get_model(model)
+        self.model = get_template(model)
 
     def _extract_feature_array(self, data):
         preprocessors = [x['preprocessor'] for x in self.model.preprocessing_steps]

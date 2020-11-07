@@ -1,9 +1,9 @@
-from .base import Model
+from .base import Template
 
 
-class TextModel(Model):
+class TextTemplate(Template):
     def __init__(self):
-        super(TextModel, self).__init__()
+        super(TextTemplate, self).__init__()
 
     def add_preprocessor(self, preprocessor, column=None):
         self.preprocessing_steps.append({'preprocessor': preprocessor, 'column': column})

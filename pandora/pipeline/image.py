@@ -1,11 +1,11 @@
-from ..factory import get_model
+from ..factory import get_template
 from .base import Pipeline
 
 
 class Image(Pipeline):
     def __init__(self, model=None):
         model = 'image' if model is None else model
-        self.model = get_model(model)
+        self.model = get_template(model)
 
     def add(self, preprocessor):
         self.model.add_preprocessor(preprocessor)

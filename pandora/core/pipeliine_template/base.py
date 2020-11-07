@@ -1,7 +1,7 @@
 from abc import abstractmethod
 
 
-class Model:
+class Template:
 
     def __init__(self):
         self.preprocessing_steps = list()

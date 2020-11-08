@@ -8,6 +8,9 @@ class Hybrid(Pipeline):
     def add(self, *args, **kwargs):
         pass
 
+    def compile(self, *args, **kwargs):
+        pass
+
     def run(self, *args, **kwargs):
         pass
 

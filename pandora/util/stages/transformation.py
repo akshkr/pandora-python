@@ -1,11 +1,13 @@
 def fit_transform(operator, vector):
+	# If the operator is function then map
+	# Else fit_transform
 	if callable(operator):
 		return map(operator, vector), operator
 
 	else:
-		t = operator
-		values = t.fit_transform(vector)
-		return values, t
+		op = operator
+		values = op.fit_transform(vector)
+		return values, op
 	
 
 def transform(operator, vector):
@@ -13,6 +15,6 @@ def transform(operator, vector):
 		return map(operator, vector)
 
 	else:
-		t = operator
-		values = t.transform(vector)
+		op = operator
+		values = op.transform(vector)
 		return values

@@ -4,10 +4,10 @@ import numpy as np
 
 def convert_to_numpy(list_to_convert):
 	"""
-	Convert items in a list to numpy array
+	Convert items in a iterator to numpy array
 	
 	Args:
-		list_to_convert (list): List of different DataType
+		list_to_convert (iterator): List of different DataType
 
 	Returns:
 		List with elements converted to numpy array
@@ -25,6 +25,6 @@ def convert_to_numpy(list_to_convert):
 			return_list.append(i.toarray())
 
 		else:
-			raise TypeError(f'Unsupported Datatype')
+			raise TypeError(f'Unsupported Datatype: {type(i)}')
 	
 	return return_list

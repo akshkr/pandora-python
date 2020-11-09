@@ -1,4 +1,4 @@
-from ..core.pipeliine_template import TextTemplate, ImageTemplate
+from ..core.pipeline_template import TextTemplate, ImageTemplate
 
 
 def get_template(variant=None):

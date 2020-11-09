@@ -31,12 +31,13 @@ class TextPipeline(Pipeline):
     def run(self, features, target):
         if self.model.preprocessing_steps:
             preprocessors, features = self._extract_steps_array(features)
-            features, models = parallelize(
+            features = parallelize(
                 handle_train_preprocessor,
                 zip(preprocessors, features),
                 n_jobs=1
             )
 
+            features = tuple(*features)
             features = convert_to_numpy(features)
             features = np.hstack(features)
 
@@ -65,4 +66,6 @@ class TextPipeline(Pipeline):
         if self.model.estimator:
             prediction_values = handle_test_estimator(self.model.estimator, features)
 
-        return prediction_values
+            return prediction_values
+
+        return None

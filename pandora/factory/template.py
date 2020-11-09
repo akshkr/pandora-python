@@ -5,8 +5,7 @@ def get_template(variant=None):
     if variant == 'text':
         return TextTemplate()
 
-    elif variant == 'image':
+    if variant == 'image':
         return ImageTemplate()
 
-    else:
-        raise ValueError
+    raise ValueError

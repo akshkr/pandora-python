@@ -1,9 +1,9 @@
-def fit(estimator, x, y):
+def fit(estimator, features, target):
     model = estimator
-    model.fit(x, y)
+    model.fit(features, target)
 
     return model
 
 
-def predict(estimator, x):
-    return estimator.predict(x)
+def predict(estimator, features):
+    return estimator.predict(features)

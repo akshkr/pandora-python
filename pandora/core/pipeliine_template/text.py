@@ -3,7 +3,7 @@ from .base import Template
 
 class TextTemplate(Template):
     def __init__(self):
-        super(TextTemplate, self).__init__()
+        super().__init__()
 
     def add_preprocessor(self, preprocessor, column=None):
         self.preprocessing_steps.append({'preprocessor': preprocessor, 'column': column})

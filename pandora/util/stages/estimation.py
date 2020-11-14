@@ -1,6 +1,6 @@
-def fit(estimator, features, target):
+def fit(estimator, features, target, **kwargs):
     model = estimator
-    model.fit(features, target)
+    model.fit(features, target, **kwargs)
 
     return model
 

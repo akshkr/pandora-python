@@ -1,12 +1,12 @@
 from .base import Template
 
 
-class TextTemplate(Template):
+class CompositeTemplate(Template):
     def __init__(self):
         super().__init__()
 
-    def add_preprocessor(self, preprocessor, column=None):
-        self.preprocessing_steps.append({'preprocessor': preprocessor, 'column': column})
+    def add_preprocessor(self, preprocessor, column=None, columns=None):
+        self.preprocessing_steps.append({'preprocessor': preprocessor, 'column': column, 'columns': columns})
 
     def update_preprocessor_models(self, model_list):
         if len(self.preprocessing_steps) != len(model_list):

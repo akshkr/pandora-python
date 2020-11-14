@@ -1,1 +1,1 @@
-from .pipeline.text import TextPipeline
+from .pipeline.composite import CompositePipeline

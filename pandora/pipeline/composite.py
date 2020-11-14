@@ -6,22 +6,22 @@ from .handler import *
 import numpy as np
 
 
-class TextPipeline(Pipeline):
+class CompositePipeline(Pipeline):
     def __init__(self, model=None):
-        model = 'text' if model is None else model
+        model = 'composite' if model is None else model
         self.model = get_template(model)
 
     def _extract_steps_array(self, data):
         # separate preprocessors and features column from preprocessing steps
         preprocessors = [x['preprocessor'] for x in self.model.preprocessing_steps]
-        features = [x['column'] for x in self.model.preprocessing_steps]
+        features = [x['column'] if x['column'] else x['columns'] for x in self.model.preprocessing_steps]
 
         # Get the column vector or the passed vector according to input preprocessors
         features = [data[col] if col is not None else data for col in features]
 
         return preprocessors, features
 
-    def add(self, preprocessor, **kwargs):
+    def add(self, preprocessor=None, **kwargs):
         self.model.add_preprocessor(preprocessor, **kwargs)
 
     def compile(self, transformer=None, estimator=None):

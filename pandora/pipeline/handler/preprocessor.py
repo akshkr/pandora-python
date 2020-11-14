@@ -3,7 +3,8 @@ from pandora.util.stages.transformation import fit_transform, transform
 
 def handle_train_preprocessor(preprocessor, feature):
     # preprocessor_list = list()
-
+    if preprocessor is None:
+        return [feature.values]
     # If input preprocessors are a list of preprocessor
     # Run N-1 preprocessor and append the list of trained preprocessor
     if isinstance(preprocessor, list):
@@ -26,6 +27,9 @@ def handle_train_preprocessor(preprocessor, feature):
 
 
 def handle_test_preprocessor(preprocessor, feature):
+    if preprocessor is None:
+        return [feature.values]
+
     if isinstance(preprocessor, list):
         for i in preprocessor[:-1]:
             feature = transform(i, feature)

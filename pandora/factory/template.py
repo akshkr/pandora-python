@@ -1,9 +1,9 @@
-from ..core.pipeline_template import TextTemplate, ImageTemplate
+from ..core.pipeline_template import CompositeTemplate, ImageTemplate
 
 
 def get_template(variant=None):
-    if variant == 'text':
-        return TextTemplate()
+    if variant == 'composite':
+        return CompositeTemplate()
 
     if variant == 'image':
         return ImageTemplate()

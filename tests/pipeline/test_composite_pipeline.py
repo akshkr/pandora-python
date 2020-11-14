@@ -6,7 +6,7 @@ from xgboost import XGBClassifier
 
 from pandora.util.io import save_model, load_model
 from .._functions import remove_symbols
-from pandora import TextPipeline
+from pandora import CompositePipeline
 
 
 def newsgroup_data(number_of_categories):
@@ -39,7 +39,7 @@ multiclass_newsgroup_data = newsgroup_data(4)
 
 
 def test_single_preprocessor():
-    tp = TextPipeline()
+    tp = CompositePipeline()
     tp.add(TfidfVectorizer(max_features=1000))
     tp.compile(
         estimator=XGBClassifier(
@@ -55,7 +55,7 @@ def test_single_preprocessor():
 
 
 def test_multi_preprocessor():
-    tp = TextPipeline()
+    tp = CompositePipeline()
     tp.add(TfidfVectorizer(max_features=1000))
     tp.add(TfidfVectorizer(max_features=20))
     tp.compile(
@@ -72,7 +72,7 @@ def test_multi_preprocessor():
 
 
 def test_multi_preprocessor_with_func():
-    tp = TextPipeline()
+    tp = CompositePipeline()
     tp.add(TfidfVectorizer(max_features=100))
     tp.add([remove_symbols, TfidfVectorizer(max_features=800)])
     tp.compile(
@@ -89,7 +89,7 @@ def test_multi_preprocessor_with_func():
 
 
 def test_multi_preprocessor_with_dump(temp_dir):
-    tp = TextPipeline()
+    tp = CompositePipeline()
     tp.add(TfidfVectorizer(max_features=100))
     tp.add([remove_symbols, TfidfVectorizer(max_features=800)])
     tp.compile(

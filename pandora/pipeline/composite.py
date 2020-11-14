@@ -24,9 +24,9 @@ class CompositePipeline(Pipeline):
     def add(self, preprocessor=None, **kwargs):
         self.model.add_preprocessor(preprocessor, **kwargs)
 
-    def compile(self, transformer=None, estimator=None):
+    def compile(self, transformer=None, estimator=None, **kwargs):
         self.model.add_transformer(transformer)
-        self.model.add_estimator(estimator)
+        self.model.add_estimator(estimator, **kwargs)
 
     def run(self, features, target):
         if self.model.preprocessing_steps:
@@ -45,7 +45,7 @@ class CompositePipeline(Pipeline):
             pass
 
         if self.model.estimator:
-            handle_train_estimator(self.model.estimator, features, target)
+            handle_train_estimator(self.model.estimator, features, target, **self.model.estimator_args)
 
     def predict(self, features):
         if self.model.preprocessing_steps:

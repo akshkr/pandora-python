@@ -3,12 +3,12 @@ from sklearn.model_selection import train_test_split
 from sklearn.datasets import fetch_20newsgroups
 from sklearn.metrics import accuracy_score
 from xgboost import XGBClassifier
+
+from pandora.util.io import save_model, load_model
+from .._functions import remove_symbols
 from pandora import TextPipeline
-import pytest
-import re
 
 
-@pytest.fixture
 def newsgroup_data(number_of_categories):
     categories_list = [
         'comp.graphics',
@@ -35,60 +35,75 @@ def newsgroup_data(number_of_categories):
     return fetch_20newsgroups(return_X_y=True, categories=categories_list[:number_of_categories])
 
 
-@pytest.mark.parametrize("number_of_categories", [4])
-def test_single_preprocessor(newsgroup_data):
+multiclass_newsgroup_data = newsgroup_data(4)
+
+
+def test_single_preprocessor():
     tp = TextPipeline()
     tp.add(TfidfVectorizer(max_features=1000))
-
     tp.compile(
         estimator=XGBClassifier(
-            objective='multi:softmax', n_estimators=100, num_class=4, learning_rate=0.075,
-            colsample_bytree=0.7, subsample=0.8, eval_metric='merror'
+            objective='multi:softmax', eval_metric='merror'
         )
     )
-    x_train, x_test, y_train, y_test = train_test_split(newsgroup_data[0], newsgroup_data[1], test_size=0.33)
+
+    x_train, x_test, y_train, y_test = train_test_split(multiclass_newsgroup_data[0], multiclass_newsgroup_data[1], test_size=0.33)
     tp.run(x_train, y_train)
     y_pred = tp.predict(x_test)
 
     assert accuracy_score(y_test, y_pred) > 0.9
 
 
-@pytest.mark.parametrize("number_of_categories", [4])
-def test_multi_preprocessor(newsgroup_data):
+def test_multi_preprocessor():
     tp = TextPipeline()
     tp.add(TfidfVectorizer(max_features=1000))
     tp.add(TfidfVectorizer(max_features=20))
-
     tp.compile(
         estimator=XGBClassifier(
-            objective='multi:softmax', n_estimators=100, num_class=4, learning_rate=0.075,
-            colsample_bytree=0.7, subsample=0.8, eval_metric='merror'
+            objective='multi:softmax', eval_metric='merror'
         )
     )
-    x_train, x_test, y_train, y_test = train_test_split(newsgroup_data[0], newsgroup_data[1], test_size=0.33)
+
+    x_train, x_test, y_train, y_test = train_test_split(multiclass_newsgroup_data[0], multiclass_newsgroup_data[1], test_size=0.33)
     tp.run(x_train, y_train)
     y_pred = tp.predict(x_test)
 
     assert accuracy_score(y_test, y_pred) > 0.9
 
 
-@pytest.mark.parametrize("number_of_categories", [4])
-def test_multi_preprocessor_with_func(newsgroup_data):
-    def remove_symbols(text):
-        return re.sub(r'^[a-zA-Z0-9]', '', text)
-
+def test_multi_preprocessor_with_func():
     tp = TextPipeline()
     tp.add(TfidfVectorizer(max_features=100))
     tp.add([remove_symbols, TfidfVectorizer(max_features=800)])
-
     tp.compile(
         estimator=XGBClassifier(
-            objective='multi:softmax', n_estimators=100, num_class=4, learning_rate=0.075,
-            colsample_bytree=0.7, subsample=0.8, eval_metric='merror'
+            objective='multi:softmax', eval_metric='merror'
         )
     )
-    x_train, x_test, y_train, y_test = train_test_split(newsgroup_data[0], newsgroup_data[1], test_size=0.33)
+
+    x_train, x_test, y_train, y_test = train_test_split(multiclass_newsgroup_data[0], multiclass_newsgroup_data[1], test_size=0.33)
     tp.run(x_train, y_train)
     y_pred = tp.predict(x_test)
+
+    assert accuracy_score(y_test, y_pred) > 0.9
+
+
+def test_multi_preprocessor_with_dump(temp_dir):
+    tp = TextPipeline()
+    tp.add(TfidfVectorizer(max_features=100))
+    tp.add([remove_symbols, TfidfVectorizer(max_features=800)])
+    tp.compile(
+        estimator=XGBClassifier(
+            objective='multi:softmax', eval_metric='merror'
+        )
+    )
+
+    x_train, x_test, y_train, y_test = train_test_split(multiclass_newsgroup_data[0], multiclass_newsgroup_data[1], test_size=0.33)
+    tp.run(x_train, y_train)
+    save_model(tp, 'model', temp_dir)
+    del tp
+
+    tp2 = load_model('model', temp_dir)
+    y_pred = tp2.predict(x_test)
 
     assert accuracy_score(y_test, y_pred) > 0.9

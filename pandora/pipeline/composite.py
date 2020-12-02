@@ -7,14 +7,42 @@ import numpy as np
 
 
 class CompositePipeline(Pipeline):
+    """
+    Pipeline for Composite Dataset
+
+    This is pipeline for composite dataset.
+
+    Parameters
+    ----------
+    model : str
+        Type of the model
+
+    Attributes
+    ----------
+    template : object
+        Template object encapsulates skeleton of the Pipeline.
+        It comprises of preprocessing steps, transformer, estimator
+    """
     def __init__(self, model=None):
         model = 'composite' if model is None else model
-        self.model = get_template(model)
+        self.template = get_template(model)
 
     def _extract_steps_array(self, data):
+        """
+        Extracts Preprocessors and Data Vectors from template
+
+        Parameters
+        ----------
+        data
+            Input data to extracts feature vectors
+
+        Returns
+        -------
+            List of Preprocessors, List of feature vectors
+        """
         # separate preprocessors and features column from preprocessing steps
-        preprocessors = [x['preprocessor'] for x in self.model.preprocessing_steps]
-        features = [x['column'] if x['column'] else x['columns'] for x in self.model.preprocessing_steps]
+        preprocessors = [x['preprocessor'] for x in self.template.preprocessing_steps]
+        features = [x['column'] if x['column'] else x['columns'] for x in self.template.preprocessing_steps]
 
         # Get the column vector or the passed vector according to input preprocessors
         features = [data[col] if col is not None else data for col in features]
@@ -22,14 +50,47 @@ class CompositePipeline(Pipeline):
         return preprocessors, features
 
     def add(self, preprocessor=None, **kwargs):
-        self.model.add_preprocessor(preprocessor, **kwargs)
+        """
+        Adds preprocessing Steps to pipeline
+
+        Parameters
+        ----------
+        preprocessor : object or function  or list
+            Preprocessor class or function of list containing Preprocessor
+            or functions. These are the function(s) applied to one vector
+        kwargs
+            column/columns
+        """
+        self.template.add_preprocessor(preprocessor, **kwargs)
 
     def compile(self, transformer=None, estimator=None, **kwargs):
-        self.model.add_transformer(transformer)
-        self.model.add_estimator(estimator, **kwargs)
+        """
+        Adds Transformer and Estimator to the template
+
+        Parameters
+        ----------
+        transformer
+        estimator : object
+            Model to Estimate predictions
+        kwargs
+            arguments for Estimator
+        """
+        self.template.add_transformer(transformer)
+        self.template.add_estimator(estimator, **kwargs)
 
     def run(self, features, target):
-        if self.model.preprocessing_steps:
+        """
+        Runs the Pipeline on the given input features and target
+
+        Parameters
+        ----------
+        features
+            Input feature(s)
+        target
+            Target to estimate
+        """
+        # Run Preprocessing steps on the input features
+        if self.template.preprocessing_steps:
             preprocessors, features = self._extract_steps_array(features)
             features = parallelize(
                 handle_train_preprocessor,
@@ -41,14 +102,26 @@ class CompositePipeline(Pipeline):
             features = convert_to_numpy(features)
             features = np.hstack(features)
 
-        if self.model.transformer:
+        if self.template.transformer:
             pass
 
-        if self.model.estimator:
-            handle_train_estimator(self.model.estimator, features, target, **self.model.estimator_args)
+        if self.template.estimator:
+            handle_train_estimator(self.template.estimator, features, target, **self.template.estimator_args)
 
     def predict(self, features):
-        if self.model.preprocessing_steps:
+        """
+        Predicts target of the input features
+
+        Parameters
+        ----------
+        features
+            Input feature(s)
+
+        Returns
+        -------
+            Predicted Values
+        """
+        if self.template.preprocessing_steps:
             preprocessors, features = self._extract_steps_array(features)
             features = parallelize(
                 handle_test_preprocessor,
@@ -60,11 +133,11 @@ class CompositePipeline(Pipeline):
             features = convert_to_numpy(features)
             features = np.hstack(features)
 
-        if self.model.transformer:
+        if self.template.transformer:
             pass
 
-        if self.model.estimator:
-            prediction_values = handle_test_estimator(self.model.estimator, features)
+        if self.template.estimator:
+            prediction_values = handle_test_estimator(self.template.estimator, features)
 
             return prediction_values
 

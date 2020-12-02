@@ -2,15 +2,25 @@ from .base import Template
 
 
 class CompositeTemplate(Template):
+    """
+    Template for Composite Pipeline
+
+    This template is used for Composite type dataset based pipeline
+    """
     def __init__(self):
         super().__init__()
 
     def add_preprocessor(self, preprocessor, column=None, columns=None):
+        """
+        Adds preprocessor to the template
+
+        Parameters
+        ----------
+        preprocessor
+            Preprocessor to be used on the input data
+        column : str, optional
+            Column name if passed data is of type DataFrame
+        columns : list, optional
+            List of column names, only if passed data is of type DataFrame
+        """
         self.preprocessing_steps.append({'preprocessor': preprocessor, 'column': column, 'columns': columns})
-
-    def update_preprocessor_models(self, model_list):
-        if len(self.preprocessing_steps) != len(model_list):
-            raise ValueError(f'Length {len(self.preprocessing_steps)} and {len(model_list)} does not match!')
-
-        for idx in range(len(self.preprocessing_steps)):
-            self.preprocessing_steps[idx].update({'preprocessor': model_list[idx]})

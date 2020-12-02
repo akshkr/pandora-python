@@ -2,7 +2,22 @@ from pandora.util.stages.transformation import fit_transform, transform
 
 
 def handle_train_preprocessor(preprocessor, feature):
+    """
+    Runs the Preprocessor on the given Feature(s)
+
+    Parameters
+    ----------
+    preprocessor : function or object or list
+        Preprocessor to be operated on feature
+    feature
+        feature vector
+    Returns
+    -------
+        transformed values
+    """
     # preprocessor_list = list()
+
+    # If No preprocessor is passed return the raw values
     if preprocessor is None:
         return [feature.values]
     # If input preprocessors are a list of preprocessor
@@ -27,6 +42,19 @@ def handle_train_preprocessor(preprocessor, feature):
 
 
 def handle_test_preprocessor(preprocessor, feature):
+    """
+    Runs the pre-fitted preprocessor on feature
+
+    Parameters
+    ----------
+    preprocessor : function or object or list
+        pre-fitted Preprocessor to be operated on feature
+    feature
+        feature vector
+    Returns
+    -------
+        transformed values
+    """
     if preprocessor is None:
         return [feature.values]
 

@@ -1,8 +1,9 @@
-from ..util.datatype import convert_to_numpy
+from ..util.conversion import convert_to_numpy
 from ..util.process import parallelize
 from ..factory import get_template
 from .base import Pipeline
 from .handler import *
+import pandas as pd
 import numpy as np
 
 
@@ -40,14 +41,18 @@ class CompositePipeline(Pipeline):
         -------
             List of Preprocessors, List of feature vectors
         """
-        # separate preprocessors and features column from preprocessing steps
-        preprocessors = [x['preprocessor'] for x in self.template.preprocessing_steps]
+        # separate preprocessor_list and features column from preprocessing steps
+        preprocessor_list = [x['preprocessor'] for x in self.template.preprocessing_steps]
         features = [x['column'] if x['column'] else x['columns'] for x in self.template.preprocessing_steps]
 
-        # Get the column vector or the passed vector according to input preprocessors
-        features = [data[col] if col is not None else data for col in features]
+        # Get the column vector or the passed vector according to input preprocessor_list
+        features = [
+            data[col] if col is not None and isinstance(data, pd.DataFrame)
+            else data[:, col] if col is not None
+            else data for col in features
+        ]
 
-        return preprocessors, features
+        return preprocessor_list, features
 
     def add(self, preprocessor=None, **kwargs):
         """
@@ -91,10 +96,10 @@ class CompositePipeline(Pipeline):
         """
         # Run Preprocessing steps on the input features
         if self.template.preprocessing_steps:
-            preprocessors, features = self._extract_steps_array(features)
+            preprocessor_list, features = self._extract_steps_array(features)
             features = parallelize(
                 handle_train_preprocessor,
-                zip(preprocessors, features),
+                zip(preprocessor_list, features),
                 n_jobs=1
             )
 
@@ -122,10 +127,10 @@ class CompositePipeline(Pipeline):
             Predicted Values
         """
         if self.template.preprocessing_steps:
-            preprocessors, features = self._extract_steps_array(features)
+            preprocessor_list, features = self._extract_steps_array(features)
             features = parallelize(
                 handle_test_preprocessor,
-                zip(preprocessors, features),
+                zip(preprocessor_list, features),
                 n_jobs=1
             )
 

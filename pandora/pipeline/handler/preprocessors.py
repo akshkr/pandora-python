@@ -1,4 +1,6 @@
 from pandora.util.stages.transformation import fit_transform, transform
+from pandora.util.conversion import get_values
+import pandas as pd
 
 
 def handle_train_preprocessor(preprocessor, feature):
@@ -19,7 +21,7 @@ def handle_train_preprocessor(preprocessor, feature):
 
     # If No preprocessor is passed return the raw values
     if preprocessor is None:
-        return [feature.values]
+        return [get_values(feature)]
     # If input preprocessors are a list of preprocessor
     # Run N-1 preprocessor and append the list of trained preprocessor
     if isinstance(preprocessor, list):
@@ -56,7 +58,7 @@ def handle_test_preprocessor(preprocessor, feature):
         transformed values
     """
     if preprocessor is None:
-        return [feature.values]
+        return [get_values(feature)]
 
     if isinstance(preprocessor, list):
         for i in preprocessor[:-1]:

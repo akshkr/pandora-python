@@ -50,4 +50,3 @@ class Template:
         """
         self.estimator = estimator
         self.estimator_args = kwargs
-

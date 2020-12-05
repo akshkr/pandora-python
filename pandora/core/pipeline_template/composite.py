@@ -10,7 +10,7 @@ class CompositeTemplate(Template):
     def __init__(self):
         super().__init__()
 
-    def add_preprocessor(self, preprocessor, column=None, columns=None):
+    def add_preprocessor(self, preprocessor, column=None):
         """
         Adds preprocessor to the template
 
@@ -20,7 +20,5 @@ class CompositeTemplate(Template):
             Preprocessor to be used on the input data
         column : str, optional
             Column name if passed data is of type DataFrame
-        columns : list, optional
-            List of column names, only if passed data is of type DataFrame
         """
-        self.preprocessing_steps.append({'preprocessor': preprocessor, 'column': column, 'columns': columns})
+        self.preprocessing_steps.append({'preprocessor': preprocessor, 'column': column})

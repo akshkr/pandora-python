@@ -43,7 +43,7 @@ class CompositePipeline(Pipeline):
         """
         # separate preprocessor_list and features column from preprocessing steps
         preprocessor_list = [x['preprocessor'] for x in self.template.preprocessing_steps]
-        features = [x['column'] if x['column'] else x['columns'] for x in self.template.preprocessing_steps]
+        features = [x['column'] for x in self.template.preprocessing_steps]
 
         # Get the column vector or the passed vector according to input preprocessor_list
         features = [

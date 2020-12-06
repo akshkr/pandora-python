@@ -1,10 +1,10 @@
-from ..util.conversion import convert_to_numpy
+from .handler.preprocessors import hstack_from_list
 from ..util.process import parallelize
 from ..factory import get_template
 from .base import Pipeline
 from .handler import *
+
 import pandas as pd
-import numpy as np
 
 
 class CompositePipeline(Pipeline):
@@ -20,13 +20,15 @@ class CompositePipeline(Pipeline):
 
     Attributes
     ----------
-    template : object
+    _template : object
         Template object encapsulates skeleton of the Pipeline.
         It comprises of preprocessing steps, transformer, estimator
     """
     def __init__(self, model=None):
         model = 'composite' if model is None else model
-        self.template = get_template(model)
+
+        self._n_jobs = 1
+        self._template = get_template(model)
 
     def _extract_steps_array(self, data):
         """
@@ -42,8 +44,8 @@ class CompositePipeline(Pipeline):
             List of Preprocessors, List of feature vectors
         """
         # separate preprocessor_list and features column from preprocessing steps
-        preprocessor_list = [x['preprocessor'] for x in self.template.preprocessing_steps]
-        features = [x['column'] for x in self.template.preprocessing_steps]
+        preprocessor_list = [x['preprocessor'] for x in self._template.preprocessing_steps]
+        features = [x['column'] for x in self._template.preprocessing_steps]
 
         # Get the column vector or the passed vector according to input preprocessor_list
         features = [
@@ -66,7 +68,7 @@ class CompositePipeline(Pipeline):
         kwargs
             column/columns
         """
-        self.template.add_preprocessor(preprocessor, **kwargs)
+        self._template.add_preprocessor(preprocessor, **kwargs)
 
     def compile(self, transformer=None, estimator=None, **kwargs):
         """
@@ -80,8 +82,8 @@ class CompositePipeline(Pipeline):
         kwargs
             arguments for Estimator
         """
-        self.template.add_transformer(transformer)
-        self.template.add_estimator(estimator, **kwargs)
+        self._template.add_transformer(transformer)
+        self._template.add_estimator(estimator, **kwargs)
 
     def run(self, features, target):
         """
@@ -95,23 +97,22 @@ class CompositePipeline(Pipeline):
             Target to estimate
         """
         # Run Preprocessing steps on the input features
-        if self.template.preprocessing_steps:
+        if self._template.preprocessing_steps:
             preprocessor_list, features = self._extract_steps_array(features)
+
             features = parallelize(
                 handle_train_preprocessor,
                 zip(preprocessor_list, features),
-                n_jobs=1
+                n_jobs=self._n_jobs
             )
 
-            features = tuple(*features)
-            features = convert_to_numpy(features)
-            features = np.hstack(features)
+            features = hstack_from_list(features)
 
-        if self.template.transformer:
+        if self._template.transformer:
             pass
 
-        if self.template.estimator:
-            handle_train_estimator(self.template.estimator, features, target, **self.template.estimator_args)
+        if self._template.estimator:
+            handle_train_estimator(self._template.estimator, features, target, **self._template.estimator_args)
 
     def predict(self, features):
         """
@@ -126,23 +127,22 @@ class CompositePipeline(Pipeline):
         -------
             Predicted Values
         """
-        if self.template.preprocessing_steps:
+        if self._template.preprocessing_steps:
             preprocessor_list, features = self._extract_steps_array(features)
+
             features = parallelize(
                 handle_test_preprocessor,
                 zip(preprocessor_list, features),
-                n_jobs=1
+                n_jobs=self._n_jobs
             )
 
-            features = tuple(*features)
-            features = convert_to_numpy(features)
-            features = np.hstack(features)
+            features = hstack_from_list(features)
 
-        if self.template.transformer:
+        if self._template.transformer:
             pass
 
-        if self.template.estimator:
-            prediction_values = handle_test_estimator(self.template.estimator, features)
+        if self._template.estimator:
+            prediction_values = handle_test_estimator(self._template.estimator, features)
 
             return prediction_values
 

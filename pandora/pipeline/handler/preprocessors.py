@@ -1,6 +1,7 @@
 from pandora.util.stages.transformation import fit_transform, transform
-from pandora.util.conversion import get_values
-import pandas as pd
+from pandora.util.conversion import get_values, convert_to_numpy
+
+import numpy as np
 
 
 def handle_train_preprocessor(preprocessor, feature):
@@ -68,3 +69,25 @@ def handle_test_preprocessor(preprocessor, feature):
     transformed_values = transform(preprocessor, feature)
 
     return [transformed_values]
+
+
+def hstack_from_list(data):
+    """
+    Stack Data Horizontally
+
+    Stacks the list of data exhausted by multiprocessor.
+
+    Parameters
+    ----------
+    data
+        Input Data
+
+    Returns
+    -------
+        Horizontally stacked data
+    """
+    data = tuple(*data)
+    data = convert_to_numpy(data)
+    data = np.hstack(data)
+
+    return data

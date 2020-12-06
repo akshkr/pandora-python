@@ -1,4 +1,5 @@
 from .handler.preprocessors import hstack_from_list
+from ..util.callbacks import PipelineCallback
 from ..util.process import parallelize
 from ..factory import get_template
 from .base import Pipeline
@@ -85,7 +86,7 @@ class CompositePipeline(Pipeline):
         self._template.add_transformer(transformer)
         self._template.add_estimator(estimator, **kwargs)
 
-    def run(self, features, target):
+    def run(self, features, target, verbose=1, callback=None):
         """
         Runs the Pipeline on the given input features and target
 
@@ -95,9 +96,17 @@ class CompositePipeline(Pipeline):
             Input feature(s)
         target
             Target to estimate
+        verbose : int
+            run verbose
+        callback : object
         """
+        if not callback:
+            callback = PipelineCallback()
+            callback.set_params({'verbose': verbose})
+
         # Run Preprocessing steps on the input features
         if self._template.preprocessing_steps:
+            callback.on_preprocess_begin()
             preprocessor_list, features = self._extract_steps_array(features)
 
             features = parallelize(
@@ -107,12 +116,15 @@ class CompositePipeline(Pipeline):
             )
 
             features = hstack_from_list(features)
+            callback.on_preprocess_end()
 
         if self._template.transformer:
             pass
 
         if self._template.estimator:
+            callback.on_estimation_begin()
             handle_train_estimator(self._template.estimator, features, target, **self._template.estimator_args)
+            callback.on_estimation_end()
 
     def predict(self, features):
         """

@@ -2,6 +2,9 @@ from time import time
 
 
 class PipelineCallback:
+    """
+    Callback for Pipelines
+    """
     def __init__(self):
         self._time_index = None
 

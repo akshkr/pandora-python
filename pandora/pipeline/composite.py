@@ -1,6 +1,7 @@
 from .handler.preprocessors import hstack_from_list
 from ..util.callbacks import PipelineCallback
 from ..util.process import parallelize
+from ..core.model import ModelBuilder
 from ..factory import get_template
 from .base import Pipeline
 from .handler import *
@@ -123,6 +124,10 @@ class CompositePipeline(Pipeline):
 
         if self._template.estimator:
             callback.on_estimation_begin()
+            if isinstance(self._template.estimator, ModelBuilder):
+                estimator_class, estimator_args = self._template.estimator.build(features, target)
+                self._template.estimator = estimator_class(**estimator_args)
+                print(estimator_class, estimator_args)
             handle_train_estimator(self._template.estimator, features, target, **self._template.estimator_args)
             callback.on_estimation_end()
 

@@ -5,6 +5,7 @@ from sklearn.preprocessing import MinMaxScaler, StandardScaler
 from xgboost import XGBRegressor
 
 from pandora import CompositePipeline
+from pandora.core.model import ParametricModelBuilder
 
 X, y = load_boston(return_X_y=True)
 
@@ -19,8 +20,9 @@ def test_all_columns():
     x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=3)
     tp.run(x_train, y_train)
     y_pred = tp.predict(x_test)
+    del tp
 
-    assert mean_squared_error(y_test, y_pred) < 20
+    assert mean_squared_error(y_test, y_pred) < 12
 
 
 def test_single_preprocessor():
@@ -34,8 +36,9 @@ def test_single_preprocessor():
     x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=3)
     tp.run(x_train, y_train)
     y_pred = tp.predict(x_test)
+    del tp
 
-    assert mean_squared_error(y_test, y_pred) < 20
+    assert mean_squared_error(y_test, y_pred) < 12
 
 
 def test_multiple_preprocessor_different_column():
@@ -50,8 +53,9 @@ def test_multiple_preprocessor_different_column():
     x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=3)
     tp.run(x_train, y_train)
     y_pred = tp.predict(x_test)
+    del tp
 
-    assert mean_squared_error(y_test, y_pred) < 20
+    assert mean_squared_error(y_test, y_pred) < 12
 
 
 def test_functions():
@@ -66,8 +70,9 @@ def test_functions():
     x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=3)
     tp.run(x_train, y_train)
     y_pred = tp.predict(x_test)
+    del tp
 
-    assert mean_squared_error(y_test, y_pred) < 20
+    assert mean_squared_error(y_test, y_pred) < 12
 
 
 def test_multiple_preprocessor_same_column():
@@ -83,5 +88,22 @@ def test_multiple_preprocessor_same_column():
     x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=3)
     tp.run(x_train, y_train)
     y_pred = tp.predict(x_test)
+    del tp
 
-    assert mean_squared_error(y_test, y_pred) < 20
+    assert mean_squared_error(y_test, y_pred) < 12
+
+
+def test_model_builder():
+    tp = CompositePipeline()
+    tp.add(column=range(0, 13))
+
+    tp.compile(
+        estimator=ParametricModelBuilder('xgbr', 'random')
+    )
+
+    x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=3)
+    tp.run(x_train, y_train)
+    y_pred = tp.predict(x_test)
+    del tp
+
+    assert mean_squared_error(y_test, y_pred) < 15

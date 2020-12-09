@@ -27,6 +27,12 @@ class ParametricModelBuilder(ModelBuilder):
         self.cv_method = search
         self.params = params
 
+    def _init_params(self):
+        if not self.params:
+            self.params = PARAMETER_ALIAS.get(self.model, None)
+        if isinstance(self.model, str):
+            self.model = ESTIMATOR_ALIAS.get(self.model, None)
+
     def build(self, features, target):
         """
         Builds the Parametric model with optimised hyper-parameters
@@ -41,8 +47,6 @@ class ParametricModelBuilder(ModelBuilder):
             Estimator and a dictionary of optimal Hyper-parameters
         """
         search_func = SEARCH_MODEL_ALIAS.get(self.cv_method, None)
-        model = ESTIMATOR_ALIAS.get(self.model, None)
-        if not self.params:
-            self.params = PARAMETER_ALIAS.get(self.model, None)
+        self._init_params()
 
-        return model, search_func(model, self.params, features, target)
+        return self.model, search_func(self.model, self.params, features, target)

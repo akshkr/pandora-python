@@ -30,6 +30,7 @@ MANIFEST
 
 # Pytest
 .pytest_cache
+pytest.log
 
 # Excel Files
 *.xlsx

@@ -26,7 +26,7 @@ def test_all_columns():
     accuracy = mean_squared_error(y_test, y_pred)
     del tp
 
-    LOGGER.info(f'{accuracy}')
+    LOGGER.info(f'Accuracy: {accuracy}')
     assert accuracy < 12
 
 

@@ -8,5 +8,5 @@ ESTIMATOR_ALIAS = {
 }
 
 PARAMETER_ALIAS = {
-    'xgbr': XGBR
+    'xgbr': PARAMS_XGBR
 }

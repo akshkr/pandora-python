@@ -22,9 +22,16 @@ class ParametricModelBuilder(ModelBuilder):
         Search method abbreviation
         The abbreviations used are in SEARCH_MODEL_ALIAS variable
     """
-    def __init__(self, model, search='random'):
+    def __init__(self, model, search='random', params=None):
         self.model = model
         self.cv_method = search
+        self.params = params
+
+    def _init_params(self):
+        if not self.params:
+            self.params = PARAMETER_ALIAS.get(self.model, None)
+        if isinstance(self.model, str):
+            self.model = ESTIMATOR_ALIAS.get(self.model, None)
 
     def build(self, features, target):
         """
@@ -40,7 +47,6 @@ class ParametricModelBuilder(ModelBuilder):
             Estimator and a dictionary of optimal Hyper-parameters
         """
         search_func = SEARCH_MODEL_ALIAS.get(self.cv_method, None)
-        model = ESTIMATOR_ALIAS.get(self.model, None)
-        parameters = PARAMETER_ALIAS.get(self.model, None)
+        self._init_params()
 
-        return model, search_func(model, parameters, features, target)
+        return self.model, search_func(self.model, self.params, features, target)

@@ -7,6 +7,9 @@ from xgboost import XGBRegressor
 from pandora import CompositePipeline
 from pandora.core.model import ParametricModelBuilder
 
+import logging
+LOGGER = logging.getLogger(__name__)
+
 X, y = load_boston(return_X_y=True)
 
 
@@ -20,9 +23,11 @@ def test_all_columns():
     x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=3)
     tp.run(x_train, y_train)
     y_pred = tp.predict(x_test)
+    accuracy = mean_squared_error(y_test, y_pred)
     del tp
 
-    assert mean_squared_error(y_test, y_pred) < 12
+    LOGGER.info(f'Accuracy: {accuracy}')
+    assert accuracy < 15
 
 
 def test_single_preprocessor():
@@ -36,9 +41,11 @@ def test_single_preprocessor():
     x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=3)
     tp.run(x_train, y_train)
     y_pred = tp.predict(x_test)
+    accuracy = mean_squared_error(y_test, y_pred)
     del tp
 
-    assert mean_squared_error(y_test, y_pred) < 12
+    LOGGER.info(f'Accuracy: {accuracy}')
+    assert accuracy < 15
 
 
 def test_multiple_preprocessor_different_column():
@@ -53,9 +60,11 @@ def test_multiple_preprocessor_different_column():
     x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=3)
     tp.run(x_train, y_train)
     y_pred = tp.predict(x_test)
+    accuracy = mean_squared_error(y_test, y_pred)
     del tp
 
-    assert mean_squared_error(y_test, y_pred) < 12
+    LOGGER.info(f'Accuracy: {accuracy}')
+    assert accuracy < 15
 
 
 def test_functions():
@@ -70,9 +79,11 @@ def test_functions():
     x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=3)
     tp.run(x_train, y_train)
     y_pred = tp.predict(x_test)
+    accuracy = mean_squared_error(y_test, y_pred)
     del tp
 
-    assert mean_squared_error(y_test, y_pred) < 12
+    LOGGER.info(f'Accuracy: {accuracy}')
+    assert accuracy < 15
 
 
 def test_multiple_preprocessor_same_column():
@@ -88,9 +99,11 @@ def test_multiple_preprocessor_same_column():
     x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=3)
     tp.run(x_train, y_train)
     y_pred = tp.predict(x_test)
+    accuracy = mean_squared_error(y_test, y_pred)
     del tp
 
-    assert mean_squared_error(y_test, y_pred) < 12
+    LOGGER.info(f'Accuracy: {accuracy}')
+    assert accuracy < 15
 
 
 def test_model_builder():
@@ -104,6 +117,33 @@ def test_model_builder():
     x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=3)
     tp.run(x_train, y_train)
     y_pred = tp.predict(x_test)
+    accuracy = mean_squared_error(y_test, y_pred)
     del tp
 
-    assert mean_squared_error(y_test, y_pred) < 15
+    LOGGER.info(f'Accuracy: {accuracy}')
+    assert accuracy < 15
+
+
+def test_grid_model_builder():
+    tp = CompositePipeline()
+    tp.add(column=range(0, 13))
+
+    params = {
+        "learning_rate": [0.05, 0.15, 0.25, 0.30],
+        "max_depth": [3, 8, 12, 15],
+        "min_child_weight": [3, 5, 7],
+        "colsample_bytree": [0.3, 0.5, 0.7],
+    }
+
+    tp.compile(
+        estimator=ParametricModelBuilder('xgbr', 'grid', params=params)
+    )
+
+    x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=3)
+    tp.run(x_train, y_train)
+    y_pred = tp.predict(x_test)
+    accuracy = mean_squared_error(y_test, y_pred)
+    del tp
+
+    LOGGER.info(f'Accuracy: {accuracy}')
+    assert accuracy < 15

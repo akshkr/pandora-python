@@ -1,5 +1,6 @@
-from .base_search import random_search
+from .base_search import random_search, grid_search
 
 SEARCH_MODEL_ALIAS = {
-    'random': random_search
+    'random': random_search,
+    'grid': grid_search
 }

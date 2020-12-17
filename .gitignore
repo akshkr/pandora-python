@@ -9,6 +9,9 @@ __pycache__/
 # MAC Files
 .DS_Store
 
+# sphinx build directory
+docs/_build
+
 # Distribution / packaging
 .Python
 build/

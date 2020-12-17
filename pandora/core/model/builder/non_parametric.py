@@ -1,12 +1,11 @@
-from ...util.stages.validation import SEARCH_MODEL_ALIAS
-from ..model.parameters import ESTIMATOR_ALIAS
-from .parameters import PARAMETER_ALIAS
-from ..model.base import ModelBuilder
-
+from pandora.util.stages.validation import SEARCH_MODEL_ALIAS
+from pandora.core.model.estimators import ESTIMATOR_ALIAS
+from pandora.core.model.parameters import PARAMETER_ALIAS
+from pandora.core.model.builder.base import ModelBuilder
 import numpy as np
 
 
-class ParametricModelBuilder(ModelBuilder):
+class NonParametricModelBuilder(ModelBuilder):
     """
     Parametric Model Builder
 

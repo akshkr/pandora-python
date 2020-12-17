@@ -1,5 +1,5 @@
-from ..factory import get_template
-from .base import Pipeline
+from pandora.factory import get_template
+from pandora.pipeline.base import Pipeline
 
 
 class Image(Pipeline):

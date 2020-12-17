@@ -1,12 +1,8 @@
-from xgboost import XGBRegressor, XGBClassifier
-from .tree_model import *
+from pandora.core.model.parameters.tree_model import *
 
-
-ESTIMATOR_ALIAS = {
-    'xgbr': XGBRegressor,
-    'xgbc': XGBClassifier
-}
 
 PARAMETER_ALIAS = {
     'xgbr': PARAMS_XGBR
 }
+
+__all__ = ['PARAMETER_ALIAS']

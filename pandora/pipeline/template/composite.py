@@ -1,4 +1,4 @@
-from .base import Template
+from pandora.pipeline.template.base import Template
 
 
 class CompositeTemplate(Template):

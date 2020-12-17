@@ -1,10 +1,10 @@
-from .handler.preprocessors import hstack_from_list
-from ..util.callbacks import PipelineCallback
-from ..util.process import parallelize
-from ..core.model import ModelBuilder
-from ..factory import get_template
-from .base import Pipeline
-from .handler import *
+from pandora.pipeline.handler.preprocessors import hstack_from_list
+from pandora.util.callbacks import PipelineCallback
+from pandora.core.model.builder import ModelBuilder
+from pandora.util.process import parallelize
+from pandora.factory import get_template
+from pandora.pipeline.base import Pipeline
+from pandora.pipeline.handler import *
 
 import pandas as pd
 

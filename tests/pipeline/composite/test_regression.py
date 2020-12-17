@@ -1,11 +1,11 @@
+from sklearn.preprocessing import MinMaxScaler, StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
 from sklearn.datasets import load_boston
-from sklearn.preprocessing import MinMaxScaler, StandardScaler
 from xgboost import XGBRegressor
 
+from pandora.core.model.builder import NonParametricModelBuilder
 from pandora import CompositePipeline
-from pandora.core.model import ParametricModelBuilder
 
 import logging
 LOGGER = logging.getLogger(__name__)
@@ -111,7 +111,7 @@ def test_model_builder():
     tp.add(column=range(0, 13))
 
     tp.compile(
-        estimator=ParametricModelBuilder('xgbr', 'random')
+        estimator=NonParametricModelBuilder('xgbr', 'random')
     )
 
     x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=3)
@@ -136,7 +136,7 @@ def test_grid_model_builder():
     }
 
     tp.compile(
-        estimator=ParametricModelBuilder('xgbr', 'grid', params=params)
+        estimator=NonParametricModelBuilder('xgbr', 'grid', params=params)
     )
 
     x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=3)

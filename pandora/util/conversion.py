@@ -2,6 +2,8 @@ from scipy.sparse.csr import csr_matrix
 import pandas as pd
 import numpy as np
 
+__all__ = ['convert_to_numpy', 'get_values']
+
 
 def convert_to_numpy(list_to_convert):
     """

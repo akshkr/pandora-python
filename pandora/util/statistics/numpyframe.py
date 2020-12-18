@@ -1,5 +1,7 @@
-from pandora.util.statistics.frame import Frame
+from .frame import Frame
 
 
 class NumpyFrame(Frame):
-    pass
+
+    def __init__(self, frame):
+        super().__init__(frame)

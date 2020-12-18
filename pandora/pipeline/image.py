@@ -1,8 +1,8 @@
 from pandora.factory import get_template
-from pandora.pipeline.base import Pipeline
+from .base import Pipeline
 
 
-class Image(Pipeline):
+class ImagePipeline(Pipeline):
     def __init__(self, model=None):
         model = 'image' if model is None else model
         self.model = get_template(model)

@@ -1,7 +1,7 @@
-﻿pandora.pipeline.image
-======================
+pandora.factory.preprocessor
+============================
 
-.. automodule:: pandora.pipeline.image
+.. automodule:: pandora.factory.preprocessor
 
    
    
@@ -19,7 +19,7 @@
       :toctree:
       :template: custom-class-template.rst
    
-      ImagePipeline
+      StatisticalPreprocessor
    
    
 

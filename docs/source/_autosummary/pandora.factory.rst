@@ -26,5 +26,6 @@ pandora.factory
    :template: custom-module-template.rst
    :recursive:
 
+   pandora.factory.preprocessor
    pandora.factory.template
 

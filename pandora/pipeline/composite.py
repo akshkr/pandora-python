@@ -3,8 +3,9 @@ from pandora.util.callbacks import PipelineCallback
 from pandora.core.model.builder import ModelBuilder
 from pandora.util.process import parallelize
 from pandora.factory import get_template
-from pandora.pipeline.base import Pipeline
-from pandora.pipeline.handler import *
+
+from .base import Pipeline
+from .handler import *
 
 import pandas as pd
 

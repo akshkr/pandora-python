@@ -1,7 +1,7 @@
-﻿pandora.pipeline.image
-======================
+pandora.core.preprocessor.multivariate
+======================================
 
-.. automodule:: pandora.pipeline.image
+.. automodule:: pandora.core.preprocessor.multivariate
 
    
    
@@ -19,7 +19,7 @@
       :toctree:
       :template: custom-class-template.rst
    
-      ImagePipeline
+      StatisticalMeasure
    
    
 

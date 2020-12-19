@@ -1,4 +1,4 @@
-from pandora.core.model.parameters.tree_model import *
+from .tree_model import *
 
 
 PARAMETER_ALIAS = {

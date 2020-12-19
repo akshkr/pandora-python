@@ -27,4 +27,5 @@ pandora.core
    :recursive:
 
    pandora.core.model
+   pandora.core.preprocessor
 

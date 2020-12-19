@@ -30,5 +30,6 @@
    pandora.core
    pandora.factory
    pandora.pipeline
+   pandora.preprocessing
    pandora.util
 

@@ -32,4 +32,5 @@ pandora.util
    pandora.util.misc
    pandora.util.process
    pandora.util.stages
+   pandora.util.statistics
 

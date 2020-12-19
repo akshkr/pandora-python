@@ -1,7 +1,7 @@
-﻿pandora.pipeline.image
-======================
+pandora.util.statistics.dataframe
+=================================
 
-.. automodule:: pandora.pipeline.image
+.. automodule:: pandora.util.statistics.dataframe
 
    
    
@@ -19,7 +19,7 @@
       :toctree:
       :template: custom-class-template.rst
    
-      ImagePipeline
+      Dataframe
    
    
 

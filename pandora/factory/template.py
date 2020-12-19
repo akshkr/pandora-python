@@ -1,4 +1,4 @@
-from ..core.pipeline_template import CompositeTemplate, ImageTemplate
+from pandora.pipeline.template import CompositeTemplate, ImageTemplate
 
 
 def get_template(variant=None):

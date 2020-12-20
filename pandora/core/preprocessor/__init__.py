@@ -1,1 +1,1 @@
-from .multivariate import StatisticalPreprocessor
+from .multivariate import StatisticalMeasure

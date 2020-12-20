@@ -32,6 +32,7 @@ class CompositePipeline(Pipeline):
 
         self._n_jobs = 1
         self._template = get_template(model)
+        self._features = None
 
     def _extract_steps_array(self, data):
         """
@@ -58,6 +59,19 @@ class CompositePipeline(Pipeline):
         ]
 
         return preprocessor_list, features
+
+    def get_features(self):
+        """
+        Get preprocessed features
+
+        Returns
+        -------
+            preprocessed features
+        """
+        if not self._features:
+            print(f'No features retained in memory. Call "pipeline.run" with "retain_features=True".')
+
+        return self._features
 
     def add(self, preprocessor=None, **kwargs):
         """
@@ -88,7 +102,7 @@ class CompositePipeline(Pipeline):
         self._template.add_transformer(transformer)
         self._template.add_estimator(estimator, **kwargs)
 
-    def run(self, features, target, verbose=1, callbacks=None):
+    def run(self, features, target, verbose=1, callbacks=None, retain_features=False):
         """
         Runs the Pipeline on the given input features and target
 
@@ -101,6 +115,9 @@ class CompositePipeline(Pipeline):
         verbose : int
             run verbose
         callbacks : list
+            List of callback objects
+        retain_features : bool
+            Retain features after preprocessing if True
         """
         if not callbacks:
             callbacks = [PipelineCallback()]
@@ -122,6 +139,8 @@ class CompositePipeline(Pipeline):
             for c in callbacks:
                 c.on_preprocess_end()
 
+            del preprocessor_list
+
         if self._template.transformer:
             pass
 
@@ -136,6 +155,9 @@ class CompositePipeline(Pipeline):
             handle_train_estimator(self._template.estimator, features, target, **self._template.estimator_args)
             for c in callbacks:
                 c.on_estimation_end()
+
+        if retain_features:
+            self._features = features
 
     def predict(self, features):
         """

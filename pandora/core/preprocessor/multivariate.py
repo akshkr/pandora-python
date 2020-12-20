@@ -8,4 +8,4 @@ class StatisticalMeasure(Transformer):
 
     def fit_transform(self, features):
         preprocessor = StatisticalPreprocessor(features)
-        return np.hstack[preprocessor.central_tendency(), preprocessor.moments()]
+        return np.hstack([preprocessor.central_tendency(), preprocessor.moments()])

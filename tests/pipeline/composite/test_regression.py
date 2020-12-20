@@ -129,10 +129,10 @@ def test_grid_model_builder():
     tp.add(column=range(0, 13))
 
     params = {
-        "learning_rate": [0.05, 0.15, 0.25, 0.30],
-        "max_depth": [3, 8, 12, 15],
+        "learning_rate": [0.05, 0.15, 0.25],
+        "max_depth": [3, 8, 12],
         "min_child_weight": [3, 5, 7],
-        "colsample_bytree": [0.3, 0.5, 0.7],
+        "colsample_bytree": [0.5, 0.7],
     }
 
     tp.compile(

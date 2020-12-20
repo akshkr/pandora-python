@@ -88,7 +88,7 @@ class CompositePipeline(Pipeline):
         self._template.add_transformer(transformer)
         self._template.add_estimator(estimator, **kwargs)
 
-    def run(self, features, target, verbose=1, callback=None):
+    def run(self, features, target, verbose=1, callbacks=None):
         """
         Runs the Pipeline on the given input features and target
 
@@ -100,15 +100,16 @@ class CompositePipeline(Pipeline):
             Target to estimate
         verbose : int
             run verbose
-        callback : object
+        callbacks : list
         """
-        if not callback:
-            callback = PipelineCallback()
-            callback.set_params({'verbose': verbose})
+        if not callbacks:
+            callbacks = [PipelineCallback()]
+            callbacks[0].set_params({'verbose': verbose})
 
         # Run Preprocessing steps on the input features
         if self._template.preprocessing_steps:
-            callback.on_preprocess_begin()
+            for c in callbacks:
+                c.on_preprocess_begin()
             preprocessor_list, features = self._extract_steps_array(features)
 
             features = parallelize(
@@ -118,19 +119,23 @@ class CompositePipeline(Pipeline):
             )
 
             features = hstack_from_list(features)
-            callback.on_preprocess_end()
+            for c in callbacks:
+                c.on_preprocess_end()
 
         if self._template.transformer:
             pass
 
         if self._template.estimator:
-            callback.on_estimation_begin()
+            for c in callbacks:
+                c.on_estimation_begin()
+
             if isinstance(self._template.estimator, ModelBuilder):
                 estimator_class, estimator_args = self._template.estimator.build(features, target)
                 self._template.estimator = estimator_class(**estimator_args)
-                print(estimator_class, estimator_args)
+
             handle_train_estimator(self._template.estimator, features, target, **self._template.estimator_args)
-            callback.on_estimation_end()
+            for c in callbacks:
+                c.on_estimation_end()
 
     def predict(self, features):
         """

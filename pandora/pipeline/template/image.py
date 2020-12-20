@@ -1,4 +1,4 @@
-from pandora.pipeline.template.base import Template
+from .base import Template
 
 
 class ImageTemplate(Template):

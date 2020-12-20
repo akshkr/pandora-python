@@ -1,3 +1,4 @@
+"""Pipeline for Akash"""
 from abc import ABCMeta, abstractmethod
 
 

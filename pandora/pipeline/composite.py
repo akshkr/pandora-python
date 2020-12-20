@@ -3,8 +3,9 @@ from pandora.util.callbacks import PipelineCallback
 from pandora.core.model.builder import ModelBuilder
 from pandora.util.process import parallelize
 from pandora.factory import get_template
-from pandora.pipeline.base import Pipeline
-from pandora.pipeline.handler import *
+
+from .base import Pipeline
+from .handler import *
 
 import pandas as pd
 
@@ -31,6 +32,7 @@ class CompositePipeline(Pipeline):
 
         self._n_jobs = 1
         self._template = get_template(model)
+        self._features = None
 
     def _extract_steps_array(self, data):
         """
@@ -57,6 +59,19 @@ class CompositePipeline(Pipeline):
         ]
 
         return preprocessor_list, features
+
+    def get_features(self):
+        """
+        Get preprocessed features
+
+        Returns
+        -------
+            preprocessed features
+        """
+        if not self._features:
+            print(f'No features retained in memory. Call "pipeline.run" with "retain_features=True".')
+
+        return self._features
 
     def add(self, preprocessor=None, **kwargs):
         """
@@ -87,7 +102,7 @@ class CompositePipeline(Pipeline):
         self._template.add_transformer(transformer)
         self._template.add_estimator(estimator, **kwargs)
 
-    def run(self, features, target, verbose=1, callback=None):
+    def run(self, features, target, verbose=1, callbacks=None, retain_features=False):
         """
         Runs the Pipeline on the given input features and target
 
@@ -99,15 +114,19 @@ class CompositePipeline(Pipeline):
             Target to estimate
         verbose : int
             run verbose
-        callback : object
+        callbacks : list
+            List of callback objects
+        retain_features : bool
+            Retain features after preprocessing if True
         """
-        if not callback:
-            callback = PipelineCallback()
-            callback.set_params({'verbose': verbose})
+        if not callbacks:
+            callbacks = [PipelineCallback()]
+            callbacks[0].set_params({'verbose': verbose})
 
         # Run Preprocessing steps on the input features
         if self._template.preprocessing_steps:
-            callback.on_preprocess_begin()
+            for c in callbacks:
+                c.on_preprocess_begin()
             preprocessor_list, features = self._extract_steps_array(features)
 
             features = parallelize(
@@ -117,19 +136,28 @@ class CompositePipeline(Pipeline):
             )
 
             features = hstack_from_list(features)
-            callback.on_preprocess_end()
+            for c in callbacks:
+                c.on_preprocess_end()
+
+            del preprocessor_list
 
         if self._template.transformer:
             pass
 
         if self._template.estimator:
-            callback.on_estimation_begin()
+            for c in callbacks:
+                c.on_estimation_begin()
+
             if isinstance(self._template.estimator, ModelBuilder):
                 estimator_class, estimator_args = self._template.estimator.build(features, target)
                 self._template.estimator = estimator_class(**estimator_args)
-                print(estimator_class, estimator_args)
+
             handle_train_estimator(self._template.estimator, features, target, **self._template.estimator_args)
-            callback.on_estimation_end()
+            for c in callbacks:
+                c.on_estimation_end()
+
+        if retain_features:
+            self._features = features
 
     def predict(self, features):
         """

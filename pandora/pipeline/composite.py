@@ -68,7 +68,7 @@ class CompositePipeline(Pipeline):
         -------
             preprocessed features
         """
-        if not self._features:
+        if self._features is None:
             print(f'No features retained in memory. Call "pipeline.run" with "retain_features=True".')
 
         return self._features

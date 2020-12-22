@@ -5,10 +5,12 @@ from sklearn.datasets import load_boston
 from xgboost import XGBRegressor
 
 from pandora.core.model.builder import NonParametricModelBuilder
+from pandora.util import seed_everything
 from pandora import CompositePipeline
 
 import logging
 LOGGER = logging.getLogger(__name__)
+seed_everything()
 
 X, y = load_boston(return_X_y=True)
 
@@ -129,7 +131,6 @@ def test_grid_model_builder():
     tp.add(column=range(0, 13))
 
     params = {
-        "learning_rate": [0.05, 0.15, 0.25],
         "max_depth": [3, 8, 12],
         "min_child_weight": [3, 5, 7],
         "colsample_bytree": [0.5, 0.7],

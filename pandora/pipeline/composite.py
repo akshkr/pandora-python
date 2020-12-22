@@ -2,7 +2,6 @@ from pandora.pipeline.handler.preprocessors import hstack_from_list
 from pandora.util.callbacks import PipelineCallback
 from pandora.core.model.builder import ModelBuilder
 from pandora.util.process import parallelize
-from pandora.factory import get_template
 
 from .base import Pipeline
 from .handler import *
@@ -20,19 +19,10 @@ class CompositePipeline(Pipeline):
     ----------
     model : str
         Type of the model
-
-    Attributes
-    ----------
-    _template : object
-        Template object encapsulates skeleton of the Pipeline.
-        It comprises of preprocessing steps, transformer, estimator
     """
     def __init__(self, model=None):
         model = 'composite' if model is None else model
-
-        self._n_jobs = 1
-        self._template = get_template(model)
-        self._features = None
+        super().__init__(model)
 
     def _extract_steps_array(self, data):
         """
@@ -59,48 +49,6 @@ class CompositePipeline(Pipeline):
         ]
 
         return preprocessor_list, features
-
-    def get_features(self):
-        """
-        Get preprocessed features
-
-        Returns
-        -------
-            preprocessed features
-        """
-        if not self._features:
-            print(f'No features retained in memory. Call "pipeline.run" with "retain_features=True".')
-
-        return self._features
-
-    def add(self, preprocessor=None, **kwargs):
-        """
-        Adds preprocessing Steps to pipeline
-
-        Parameters
-        ----------
-        preprocessor : object or function  or list
-            Preprocessor class or function of list containing Preprocessor
-            or functions. These are the function(s) applied to one vector
-        kwargs
-            column/columns
-        """
-        self._template.add_preprocessor(preprocessor, **kwargs)
-
-    def compile(self, transformer=None, estimator=None, **kwargs):
-        """
-        Adds Transformer and Estimator to the template
-
-        Parameters
-        ----------
-        transformer
-        estimator : object
-            Model to Estimate predictions
-        kwargs
-            arguments for Estimator
-        """
-        self._template.add_transformer(transformer)
-        self._template.add_estimator(estimator, **kwargs)
 
     def run(self, features, target, verbose=1, callbacks=None, retain_features=False):
         """

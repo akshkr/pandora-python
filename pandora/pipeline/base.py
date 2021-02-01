@@ -39,7 +39,7 @@ class Pipeline(metaclass=ABCMeta):
 
         return self._features
 
-    def add(self, preprocessor=None, **kwargs):
+    def add(self, preprocessor=None, **preprocessor_params):
         """
         Adds preprocessing Steps to pipeline
 
@@ -48,12 +48,12 @@ class Pipeline(metaclass=ABCMeta):
         preprocessor : object or function  or list
             Preprocessor class or function of list containing Preprocessor
             or functions. These are the function(s) applied to one vector
-        kwargs
+        preprocessor_params
             column/columns
         """
-        self._template.add_preprocessor(preprocessor, **kwargs)
+        self._template.add_preprocessor(preprocessor, **preprocessor_params)
 
-    def compile(self, transformer=None, estimator=None, **kwargs):
+    def compile(self, transformer=None, estimator=None, **estimator_args):
         """
         Adds Transformer and Estimator to the template
 
@@ -62,11 +62,11 @@ class Pipeline(metaclass=ABCMeta):
         transformer
         estimator : object
             Model to Estimate predictions
-        kwargs
+        estimator_args
             arguments for Estimator
         """
         self._template.add_transformer(transformer)
-        self._template.add_estimator(estimator, **kwargs)
+        self._template.add_estimator(estimator, **estimator_args)
 
     @abstractmethod
     def run(self, *args, **kwargs):

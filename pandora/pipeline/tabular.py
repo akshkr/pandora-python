@@ -113,8 +113,8 @@ class TabularPipeline(Pipeline):
 
             # Model Builder
             if isinstance(self._template.estimator, ModelBuilder):
-                estimator_class, estimator_args = self._template.estimator.build(features, target)
-                self._template.estimator = estimator_class(**estimator_args)
+                estimator_class, estimator_hyper_params = self._template.estimator.build(features, target)
+                self._template.estimator = estimator_class(**estimator_hyper_params)
 
             handle_train_estimator(self._template.estimator, features, target, **self._template.estimator_args)
             for c in callbacks:

@@ -1,7 +1,7 @@
 from pandora.util.stages.estimation import fit, predict
 
 
-def handle_train_estimator(estimator, features, target, **kwargs):
+def handle_train_estimator(estimator, features, target, **estimator_args):
     """
     Fits Estimator with given features and target
 
@@ -12,14 +12,14 @@ def handle_train_estimator(estimator, features, target, **kwargs):
         Input features/ independent variable
     target
         Input target/ Dependent variable
-    kwargs
+    estimator_args
         Arguments to be passes in Estimator fit function
 
     Returns
     -------
         Trained model
     """
-    return fit(estimator, features, target, **kwargs)
+    return fit(estimator, features, target, **estimator_args)
 
 
 def handle_test_estimator(estimator, features):

@@ -38,15 +38,15 @@ class Template:
         """
         self.transformer = transformer
 
-    def add_estimator(self, estimator, **kwargs):
+    def add_estimator(self, estimator, **estimator_args):
         """
         Adds Estimator and its arguments in template
 
         Parameters
         ----------
         estimator
-        kwargs
-            Estimator Arguments
+        estimator_args
+            Estimator Arguments while fitting (not the hyper-parameters)
         """
         self.estimator = estimator
-        self.estimator_args = kwargs
+        self.estimator_args = estimator_args

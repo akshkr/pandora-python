@@ -1,4 +1,5 @@
 from pandora.pipeline.handler.preprocessors import hstack_from_list
+from pandora.util.stages.validation import base_n_fold_splitter
 from pandora.util.callbacks import PipelineCallback
 from pandora.core.model.builder import ModelBuilder
 from pandora.util.process import parallelize
@@ -23,6 +24,7 @@ class CompositePipeline(Pipeline):
     def __init__(self, model=None):
         model = 'composite' if model is None else model
         super().__init__(model)
+        self.cv_params = None
 
     def _extract_steps_array(self, data):
         """
@@ -49,6 +51,19 @@ class CompositePipeline(Pipeline):
         ]
 
         return preprocessor_list, features
+
+    def enable_cv(self, method, n_split=4):
+        """
+        Enables cross-validation
+
+        Parameters
+        ----------
+        method : str or object
+            Method used for cross-validation
+        n_split
+            Number of split for training data
+        """
+        self.cv_params = {'method': method, 'n_split': n_split}
 
     def run(self, features, target, verbose=1, callbacks=None, retain_features=False):
         """

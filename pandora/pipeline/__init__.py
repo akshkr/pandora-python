@@ -1,4 +1,3 @@
-"""Pipeline for Akash"""
-from .composite import CompositePipeline
+from .tabular import TabularPipeline
 from .image import ImagePipeline
 from .base import Pipeline

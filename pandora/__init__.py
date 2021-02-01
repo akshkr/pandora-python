@@ -1,7 +1,7 @@
-from .pipeline.composite import CompositePipeline
+from .pipeline.tabular import TabularPipeline
 
 __all__ = [
-    'CompositePipeline',
+    'TabularPipeline',
     'preprocessing',
     'model'
 ]

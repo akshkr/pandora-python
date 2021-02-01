@@ -1,6 +1,6 @@
 from pandora.util.stages.validation import PARAMETER_SEARCH_ALIAS
 from pandora.core.model.estimators import ESTIMATOR_ALIAS
-from pandora.core.model.parameters import PARAMETER_ALIAS
+from pandora.core.model.estimators.parameters import PARAMETER_ALIAS
 from .base import ModelBuilder
 
 import numpy as np

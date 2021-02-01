@@ -1,4 +1,3 @@
-"""Pipeline for Akash"""
 from abc import ABCMeta, abstractmethod
 from pandora.factory import get_template
 

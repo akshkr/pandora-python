@@ -1,5 +1,4 @@
 from pandora.pipeline.handler.preprocessors import hstack_from_list
-from pandora.util.stages.validation import base_n_fold_splitter
 from pandora.util.callbacks import PipelineCallback
 from pandora.core.model.builder import ModelBuilder
 from pandora.util.process import parallelize
@@ -10,7 +9,7 @@ from .handler import *
 import pandas as pd
 
 
-class CompositePipeline(Pipeline):
+class TabularPipeline(Pipeline):
     """
     Pipeline for Composite Dataset
 
@@ -22,7 +21,7 @@ class CompositePipeline(Pipeline):
         Type of the model
     """
     def __init__(self, model=None):
-        model = 'composite' if model is None else model
+        model = 'tabular' if model is None else model
         super().__init__(model)
         self.cv_params = None
 
@@ -92,6 +91,7 @@ class CompositePipeline(Pipeline):
                 c.on_preprocess_begin()
             preprocessor_list, features = self._extract_steps_array(features)
 
+            # parallel preprocessing
             features = parallelize(
                 handle_train_preprocessor,
                 zip(preprocessor_list, features),
@@ -111,6 +111,7 @@ class CompositePipeline(Pipeline):
             for c in callbacks:
                 c.on_estimation_begin()
 
+            # Model Builder
             if isinstance(self._template.estimator, ModelBuilder):
                 estimator_class, estimator_args = self._template.estimator.build(features, target)
                 self._template.estimator = estimator_class(**estimator_args)

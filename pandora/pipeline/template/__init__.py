@@ -1,2 +1,2 @@
 from .image import ImageTemplate
-from .composite import CompositeTemplate
+from .tabular import TabularTemplate

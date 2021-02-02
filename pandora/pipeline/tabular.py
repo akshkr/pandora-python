@@ -64,7 +64,7 @@ class TabularPipeline(Pipeline):
         """
         self.cv_params = {'method': method, 'n_split': n_split}
 
-    def run(self, features, target, verbose=1, callbacks=None, retain_features=False):
+    def run(self, features, target, verbose=1, callbacks=None, retain_data=False):
         """
         Runs the Pipeline on the given input features and target
 
@@ -78,7 +78,7 @@ class TabularPipeline(Pipeline):
             run verbose
         callbacks : list
             List of callback objects
-        retain_features : bool
+        retain_data : bool
             Retain features after preprocessing if True
         """
         if not callbacks:
@@ -120,8 +120,8 @@ class TabularPipeline(Pipeline):
             for c in callbacks:
                 c.on_estimation_end()
 
-        if retain_features:
-            self._features = features
+        if retain_data:
+            self._data = features
 
     def predict(self, features):
         """

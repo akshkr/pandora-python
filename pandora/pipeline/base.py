@@ -18,12 +18,14 @@ class Pipeline(metaclass=ABCMeta):
     _template : object
         Template object encapsulates skeleton of the Pipeline.
         It comprises of preprocessing steps, transformer, estimator
+    _data : np.ndarray
+        Data Stored after preprocessing
     """
 
     def __init__(self, model):
 
         self._n_jobs = 1
-        self._features = None
+        self._data = None
         self._template = get_template(model)
 
     def get_data(self):
@@ -34,10 +36,10 @@ class Pipeline(metaclass=ABCMeta):
         -------
             preprocessed features
         """
-        if self._features is None:
-            print(f'No features retained in memory. Call "pipeline.run" with "retain_features=True".')
+        if self._data is None:
+            print(f'No Data retained in memory. Call "pipeline.run" with "retain_data=True".')
 
-        return self._features
+        return self._data
 
     def add(self, preprocessor=None, **preprocessor_params):
         """

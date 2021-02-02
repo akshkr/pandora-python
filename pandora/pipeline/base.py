@@ -23,8 +23,7 @@ class Pipeline(metaclass=ABCMeta):
     """
 
     def __init__(self, model):
-
-        self._n_jobs = 1
+        self._n_jobs = None
         self._data = None
         self._template = get_template(model)
 

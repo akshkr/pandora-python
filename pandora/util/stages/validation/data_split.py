@@ -4,7 +4,6 @@ from sklearn.model_selection import KFold, StratifiedKFold, GroupKFold
 DATA_SPLIT_ALIAS = {
     'k': KFold,
     'stratified': StratifiedKFold,
-    'group': GroupKFold
 }
 
 

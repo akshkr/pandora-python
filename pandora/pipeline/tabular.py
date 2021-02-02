@@ -1,4 +1,5 @@
 from pandora.pipeline.handler.preprocessors import hstack_from_list
+from pandora.util.stages.validation import base_n_fold_splitter
 from pandora.util.callbacks import PipelineCallback
 from pandora.core.model.builder import ModelBuilder
 from pandora.util.process import parallelize
@@ -13,7 +14,7 @@ class TabularPipeline(Pipeline):
     """
     Pipeline for Composite Dataset
 
-    This is pipeline for composite dataset.
+    This is pipeline for tabular dataset.
 
     Parameters
     ----------
@@ -115,6 +116,10 @@ class TabularPipeline(Pipeline):
             if isinstance(self._template.estimator, ModelBuilder):
                 estimator_class, estimator_hyper_params = self._template.estimator.build(features, target)
                 self._template.estimator = estimator_class(**estimator_hyper_params)
+
+            # Validation
+            if self.cv_params:
+                base_n_fold_splitter(self.cv_params['method'], features, target, self.cv_params['n_split'])
 
             handle_train_estimator(self._template.estimator, features, target, **self._template.estimator_args)
             for c in callbacks:

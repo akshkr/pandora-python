@@ -1,6 +1,6 @@
-from pandora.util.stages.validation import SEARCH_MODEL_ALIAS
+from pandora.core.model.estimators.parameters import PARAMETER_ALIAS
+from pandora.util.stages.validation import PARAMETER_SEARCH_ALIAS
 from pandora.core.model.estimators import ESTIMATOR_ALIAS
-from pandora.core.model.parameters import PARAMETER_ALIAS
 from .base import ModelBuilder
 
 import numpy as np
@@ -46,7 +46,7 @@ class NonParametricModelBuilder(ModelBuilder):
         -------
             Estimator and a dictionary of optimal Hyper-parameters
         """
-        search_func = SEARCH_MODEL_ALIAS.get(self.cv_method, None)
+        search_func = PARAMETER_SEARCH_ALIAS.get(self.cv_method, None)
         self._init_params()
 
         return self.model, search_func(self.model, self.params, features, target)

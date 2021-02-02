@@ -4,6 +4,12 @@ import numpy as np
 
 
 class StatisticalPreprocessor:
+    """
+    Factory for Statistical Preprocessor operating on various DataTypes
+
+    Calling this function returns the preprocessor of relevant datatype
+    passed in the constructor
+    """
 
     def __new__(cls, frame):
         if isinstance(frame, pd.DataFrame):

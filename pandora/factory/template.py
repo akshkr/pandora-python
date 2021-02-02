@@ -1,4 +1,4 @@
-from pandora.pipeline.template import CompositeTemplate, ImageTemplate
+from pandora.pipeline.template import TabularTemplate, ImageTemplate
 
 
 def get_template(variant=None):
@@ -14,8 +14,8 @@ def get_template(variant=None):
     -------
         Template object
     """
-    if variant == 'composite':
-        return CompositeTemplate()
+    if variant == 'tabular':
+        return TabularTemplate()
 
     if variant == 'image':
         return ImageTemplate()

@@ -6,7 +6,7 @@ from xgboost import XGBRegressor
 
 from pandora.core.model.builder import NonParametricModelBuilder
 from pandora.util import seed_everything
-from pandora import CompositePipeline
+from pandora import TabularPipeline
 
 import logging
 LOGGER = logging.getLogger(__name__)
@@ -16,7 +16,7 @@ X, y = load_boston(return_X_y=True)
 
 
 def test_all_columns():
-    tp = CompositePipeline()
+    tp = TabularPipeline()
     tp.add(column=range(13))
     tp.compile(
         estimator=XGBRegressor(random_state=3)
@@ -33,7 +33,7 @@ def test_all_columns():
 
 
 def test_single_preprocessor():
-    tp = CompositePipeline()
+    tp = TabularPipeline()
     tp.add(MinMaxScaler(), column=[0])
     tp.add(column=range(1, 13))
     tp.compile(
@@ -51,7 +51,7 @@ def test_single_preprocessor():
 
 
 def test_multiple_preprocessor_different_column():
-    tp = CompositePipeline()
+    tp = TabularPipeline()
     tp.add(MinMaxScaler(), column=[0, 2, 4])
     tp.add(StandardScaler(), column=[1, 3, 5])
     tp.add(column=range(6, 13))
@@ -70,7 +70,7 @@ def test_multiple_preprocessor_different_column():
 
 
 def test_functions():
-    tp = CompositePipeline()
+    tp = TabularPipeline()
     tp.add(lambda x: x*10, column=range(9))
     tp.add(column=range(9, 13))
 
@@ -89,7 +89,7 @@ def test_functions():
 
 
 def test_multiple_preprocessor_same_column():
-    tp = CompositePipeline()
+    tp = TabularPipeline()
     tp.add([lambda x: x * 10, MinMaxScaler()], column=range(4))
     tp.add([MinMaxScaler(), StandardScaler()], column=range(4, 9))
     tp.add(column=range(9, 13))
@@ -109,7 +109,7 @@ def test_multiple_preprocessor_same_column():
 
 
 def test_model_builder():
-    tp = CompositePipeline()
+    tp = TabularPipeline()
     tp.add(column=range(0, 13))
 
     tp.compile(
@@ -127,7 +127,7 @@ def test_model_builder():
 
 
 def test_grid_model_builder():
-    tp = CompositePipeline()
+    tp = TabularPipeline()
     tp.add(column=range(0, 13))
 
     params = {

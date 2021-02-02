@@ -9,7 +9,7 @@ from .handler import *
 import pandas as pd
 
 
-class CompositePipeline(Pipeline):
+class TabularPipeline(Pipeline):
     """
     Pipeline for Composite Dataset
 
@@ -21,8 +21,9 @@ class CompositePipeline(Pipeline):
         Type of the model
     """
     def __init__(self, model=None):
-        model = 'composite' if model is None else model
+        model = 'tabular' if model is None else model
         super().__init__(model)
+        self.cv_params = None
 
     def _extract_steps_array(self, data):
         """
@@ -49,6 +50,19 @@ class CompositePipeline(Pipeline):
         ]
 
         return preprocessor_list, features
+
+    def enable_cv(self, method, n_split=4):
+        """
+        Enables cross-validation
+
+        Parameters
+        ----------
+        method : str or object
+            Method used for cross-validation
+        n_split
+            Number of split for training data
+        """
+        self.cv_params = {'method': method, 'n_split': n_split}
 
     def run(self, features, target, verbose=1, callbacks=None, retain_features=False):
         """
@@ -77,6 +91,7 @@ class CompositePipeline(Pipeline):
                 c.on_preprocess_begin()
             preprocessor_list, features = self._extract_steps_array(features)
 
+            # parallel preprocessing
             features = parallelize(
                 handle_train_preprocessor,
                 zip(preprocessor_list, features),
@@ -96,9 +111,10 @@ class CompositePipeline(Pipeline):
             for c in callbacks:
                 c.on_estimation_begin()
 
+            # Model Builder
             if isinstance(self._template.estimator, ModelBuilder):
-                estimator_class, estimator_args = self._template.estimator.build(features, target)
-                self._template.estimator = estimator_class(**estimator_args)
+                estimator_class, estimator_hyper_params = self._template.estimator.build(features, target)
+                self._template.estimator = estimator_class(**estimator_hyper_params)
 
             handle_train_estimator(self._template.estimator, features, target, **self._template.estimator_args)
             for c in callbacks:

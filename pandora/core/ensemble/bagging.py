@@ -6,5 +6,5 @@ class Bagging(BaseEnsemble):
     def fit(self, features, target):
         pass
 
-    def predict(self, target):
+    def predict(self, features):
         pass

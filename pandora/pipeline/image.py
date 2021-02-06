@@ -7,6 +7,9 @@ class ImagePipeline(Pipeline):
         model = 'image' if model is None else model
         super().__init__(model)
 
+    def set_processor(self, *args, **kwargs):
+        pass
+
     def enable_cv(self, *args, **kwargs):
         pass
 

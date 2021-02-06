@@ -4,7 +4,7 @@ from sklearn.metrics import mean_squared_error
 from sklearn.datasets import load_boston
 from xgboost import XGBRegressor
 
-from pandora.core.model.builder import NonParametricModelBuilder
+from pandora.core.model.builder.non_parametric import NonParametricModelBuilder
 from pandora.util import seed_everything
 from pandora import TabularPipeline
 
@@ -113,7 +113,7 @@ def test_model_builder():
     tp.add(column=range(0, 13))
 
     tp.compile(
-        estimator=NonParametricModelBuilder('xgbr', 'random')
+        estimator=NonParametricModelBuilder('xgbr', search='random')
     )
 
     x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=3)
@@ -148,3 +148,16 @@ def test_grid_model_builder():
 
     LOGGER.info(f'Accuracy: {accuracy}')
     assert accuracy < 15
+
+
+def test_cv():
+    tp = TabularPipeline()
+    tp.add(column=range(0, 13))
+
+    tp.compile(
+        estimator=XGBRegressor(random_state=3)
+    )
+
+    tp.enable_cv('KFold', metrics=['mse'], n_split=4)
+
+    tp.run(X, y)

@@ -30,7 +30,7 @@ def fit_all(estimators, features, target, n_jobs=None, bootstrap=False, index=No
         else:
             raise TypeError('Invalid features and target')
 
-    estimators = parallelize(fit, zip(estimators, features, target), n_jobs=n_jobs)
+    estimators = parallelize(fit, zip(estimators, features, target), n_jobs=n_jobs, multi_return=False)
 
     return estimators
 
@@ -46,6 +46,6 @@ def predict_all(estimators, features, n_jobs=None, index=None):
         else:
             raise TypeError('Invalid features')
 
-    predictions = parallelize(predict, zip(estimators, features), n_jobs=n_jobs)
+    predictions = parallelize(predict, zip(estimators, features), n_jobs=n_jobs, multi_return=False)
 
     return predictions

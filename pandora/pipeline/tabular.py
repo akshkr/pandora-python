@@ -1,8 +1,8 @@
-from pandora.pipeline.handler.preprocessors import hstack_from_list
+from pandora.core.model.builder.base import ModelBuilder
 from pandora.util.callbacks import PipelineCallback
-from pandora.core.model.builder import ModelBuilder
 from pandora.util.process import parallelize
 
+from .handler.preprocessors import hstack_from_list
 from .base import Pipeline
 from .handler import *
 
@@ -23,7 +23,6 @@ class TabularPipeline(Pipeline):
     def __init__(self, model=None):
         model = 'tabular' if model is None else model
         super().__init__(model)
-        self.cv_params = None
 
     def _extract_steps_array(self, data):
         """
@@ -51,7 +50,7 @@ class TabularPipeline(Pipeline):
 
         return preprocessor_list, features
 
-    def enable_cv(self, method, n_split=4):
+    def enable_cv(self, method, metrics, n_split=4):
         """
         Enables cross-validation
 
@@ -59,16 +58,23 @@ class TabularPipeline(Pipeline):
         ----------
         method : str or object
             Method used for cross-validation
+        metrics : list of str
+            Evaluation metrics to be used
         n_split
             Number of split for training data
         """
-        self.cv_params = {'method': method, 'n_split': n_split}
+        self.cv_params = {'method': method, 'metrics': metrics, 'n_split': n_split, 'n_jobs': self._n_jobs}
 
-    def disable_cv(self):
+    def set_processor(self, n_jobs):
         """
-        Function to disable cross-validation
+        Sets Multiprocessing parameters
+
+        Parameters
+        ----------
+        n_jobs : int
+            Number of jobs to run in parallel
         """
-        self.cv_params = None
+        self._n_jobs = n_jobs
 
     def run(self, features, target, verbose=1, callbacks=None, retain_data=False):
         """
@@ -124,7 +130,7 @@ class TabularPipeline(Pipeline):
 
             # Validation
             if self.cv_params:
-                handle_cv_train(self.cv_params['method'], self._template.estimator, features, target)
+                handle_cv(self.cv_params, self._template.estimator, features, target)
 
             handle_train_estimator(self._template.estimator, features, target, **self._template.estimator_args)
             for c in callbacks:

@@ -26,6 +26,7 @@ class Pipeline(metaclass=ABCMeta):
         self._n_jobs = None
         self._data = None
         self._template = get_template(model)
+        self.cv_params = None
 
     def get_data(self):
         """
@@ -70,12 +71,18 @@ class Pipeline(metaclass=ABCMeta):
         self._template.add_estimator(estimator, **estimator_args)
 
     @abstractmethod
-    def enable_cv(self, *args, **kwargs):
+    def set_processor(self, *args, **kwargs):
         raise NotImplementedError
 
     @abstractmethod
-    def disable_cv(self):
+    def enable_cv(self, *args, **kwargs):
         raise NotImplementedError
+
+    def disable_cv(self):
+        """
+        Function to disable cross-validation
+        """
+        self.cv_params = None
 
     @abstractmethod
     def run(self, *args, **kwargs):

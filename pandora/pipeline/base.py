@@ -70,6 +70,14 @@ class Pipeline(metaclass=ABCMeta):
         self._template.add_estimator(estimator, **estimator_args)
 
     @abstractmethod
+    def enable_cv(self, *args, **kwargs):
+        raise NotImplementedError
+
+    @abstractmethod
+    def disable_cv(self):
+        raise NotImplementedError
+
+    @abstractmethod
     def run(self, *args, **kwargs):
         raise NotImplementedError
 

@@ -1,5 +1,4 @@
 from xgboost import XGBRegressor, XGBClassifier
-from sklearn.ensemble import BaggingClassifier
 
 ESTIMATOR_ALIAS = {
     'xgbr': XGBRegressor,

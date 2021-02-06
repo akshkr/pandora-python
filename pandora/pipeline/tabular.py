@@ -1,5 +1,4 @@
 from pandora.pipeline.handler.preprocessors import hstack_from_list
-from pandora.util.stages.validation import base_n_fold_splitter
 from pandora.util.callbacks import PipelineCallback
 from pandora.core.model.builder import ModelBuilder
 from pandora.util.process import parallelize
@@ -65,6 +64,12 @@ class TabularPipeline(Pipeline):
         """
         self.cv_params = {'method': method, 'n_split': n_split}
 
+    def disable_cv(self):
+        """
+        Function to disable cross-validation
+        """
+        self.cv_params = None
+
     def run(self, features, target, verbose=1, callbacks=None, retain_data=False):
         """
         Runs the Pipeline on the given input features and target
@@ -119,7 +124,7 @@ class TabularPipeline(Pipeline):
 
             # Validation
             if self.cv_params:
-                base_n_fold_splitter(self.cv_params['method'], features, target, self.cv_params['n_split'])
+                handle_cv_train(self.cv_params['method'], self._template.estimator, features, target)
 
             handle_train_estimator(self._template.estimator, features, target, **self._template.estimator_args)
             for c in callbacks:

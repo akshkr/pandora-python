@@ -33,3 +33,19 @@ def fit_all(estimators, features, target, n_jobs=None, bootstrap=False, index=No
     estimators = parallelize(fit, zip(estimators, features, target), n_jobs=n_jobs)
 
     return estimators
+
+
+def predict_all(estimators, features, n_jobs=None, index=None):
+    if index:
+        features = [features[i] for i in index]
+
+    else:
+        if isinstance(features, list):
+            assert len(estimators) == len(features)
+
+        else:
+            raise TypeError('Invalid features')
+
+    predictions = parallelize(predict, zip(estimators, features), n_jobs=n_jobs)
+
+    return predictions

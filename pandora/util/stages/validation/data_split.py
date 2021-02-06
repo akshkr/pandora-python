@@ -1,10 +1,9 @@
-from sklearn.model_selection import KFold, StratifiedKFold, GroupKFold
+from sklearn.model_selection import KFold, StratifiedKFold
 
 
 DATA_SPLIT_ALIAS = {
-    'k': KFold,
-    'stratified': StratifiedKFold,
-    'group': GroupKFold
+    'KFold': KFold,
+    'StratifiedKFold': StratifiedKFold,
 }
 
 

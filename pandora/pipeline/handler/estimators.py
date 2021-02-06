@@ -57,9 +57,11 @@ def handle_cv(cv_params, estimator, features, target):
     target : array or DataFrame
         Target to be trained upon
     """
+    # Get index list of cross-validation
     split_index = base_n_fold_splitter(cv_params['method'], features, target, cv_params['n_split'])
     train_index, test_index = list(zip(*split_index))
 
+    # Make copies of estimator to multiprocess
     estimator_list = [deepcopy(estimator) for i in range(cv_params['n_split'])]
 
     estimator_list = fit_all(estimator_list, features, target, n_jobs=cv_params['n_jobs'], index=train_index)

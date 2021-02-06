@@ -67,7 +67,7 @@ class TabularPipeline(Pipeline):
 
     def set_processor(self, n_jobs):
         """
-        Sets Multiprocessing parameters
+        Sets Processor parameters
 
         Parameters
         ----------

@@ -157,7 +157,6 @@ def test_cv():
     tp.compile(
         estimator=XGBRegressor(random_state=3)
     )
-
     tp.enable_cv('KFold', metrics=['mse'], n_split=4)
 
     tp.run(X, y)

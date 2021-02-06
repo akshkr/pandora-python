@@ -61,8 +61,8 @@ def handle_cv(cv_params, estimator, features, target):
     train_index, test_index = list(zip(*split_index))
 
     estimator_list = [deepcopy(estimator) for i in range(cv_params['n_split'])]
-    estimator_list = fit_all(estimator_list, features, target, n_jobs=cv_params['n_jobs'], index=train_index)
 
+    estimator_list = fit_all(estimator_list, features, target, n_jobs=cv_params['n_jobs'], index=train_index)
     predictions = predict_all(estimator_list, features, n_jobs=cv_params['n_jobs'], index=test_index)
 
     for t in list(zip(test_index, predictions)):

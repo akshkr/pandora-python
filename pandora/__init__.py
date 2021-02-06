@@ -1,7 +1,5 @@
-from .pipeline.tabular import TabularPipeline
-
 __all__ = [
-    'TabularPipeline',
+    'pipeline',
     'preprocessing',
     'model'
 ]

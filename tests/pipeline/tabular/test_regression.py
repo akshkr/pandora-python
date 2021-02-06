@@ -6,7 +6,7 @@ from xgboost import XGBRegressor
 
 from pandora.core.model.builder.non_parametric import NonParametricModelBuilder
 from pandora.util import seed_everything
-from pandora import TabularPipeline
+from pandora.pipeline import TabularPipeline
 
 import logging
 LOGGER = logging.getLogger(__name__)

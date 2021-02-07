@@ -1,7 +1,7 @@
 from abc import ABCMeta, abstractmethod
 
 
-class ModelBuilder(metaclass=ABCMeta):
+class BaseModelBuilder(metaclass=ABCMeta):
     """
     Base Model Builder class
     used for hyper-parameter tuning

@@ -1,7 +1,7 @@
-from .base import Template
+from .base import BaseTemplate
 
 
-class ImageTemplate(Template):
+class ImageTemplate(BaseTemplate):
     def __init__(self):
         super().__init__()
 

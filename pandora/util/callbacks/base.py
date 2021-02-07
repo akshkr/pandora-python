@@ -1,4 +1,4 @@
-class Callbacks:
+class BaseCallbacks:
 
     def set_params(self, *args, **kwargs):
         raise NotImplementedError

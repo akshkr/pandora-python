@@ -1,7 +1,7 @@
 from abc import abstractmethod
 
 
-class Template:
+class BaseTemplate:
     """
     Base Template class for inheritance
 

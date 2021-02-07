@@ -1,7 +1,7 @@
-from .base import Template
+from .base import BaseTemplate
 
 
-class TabularTemplate(Template):
+class TabularTemplate(BaseTemplate):
     """
     Template for Composite Pipeline
 

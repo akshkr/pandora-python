@@ -2,7 +2,7 @@ from abc import ABCMeta, abstractmethod
 from pandora.factory import get_template
 
 
-class Pipeline(metaclass=ABCMeta):
+class BasePipeline(metaclass=ABCMeta):
     """
     Base pipeline
 

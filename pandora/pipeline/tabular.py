@@ -1,15 +1,15 @@
-from pandora.core.model.builder.base import ModelBuilder
+from pandora.core.model.builder.base import BaseModelBuilder
 from pandora.util.callbacks import PipelineCallback
 from pandora.util.process import parallelize
 
 from .handler.preprocessors import hstack_from_list
-from .base import Pipeline
+from .base import BasePipeline
 from .handler import *
 
 import pandas as pd
 
 
-class TabularPipeline(Pipeline):
+class TabularPipeline(BasePipeline):
     """
     Pipeline for Composite Dataset
 
@@ -124,7 +124,7 @@ class TabularPipeline(Pipeline):
                 c.on_estimation_begin()
 
             # Model Builder
-            if isinstance(self._template.estimator, ModelBuilder):
+            if isinstance(self._template.estimator, BaseModelBuilder):
                 estimator_class, estimator_hyper_params = self._template.estimator.build(features, target)
                 self._template.estimator = estimator_class(**estimator_hyper_params)
 

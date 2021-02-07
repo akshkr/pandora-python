@@ -1,8 +1,8 @@
 from pandora.factory import get_template
-from .base import Pipeline
+from .base import BasePipeline
 
 
-class ImagePipeline(Pipeline):
+class ImagePipeline(BasePipeline):
     def __init__(self, model=None):
         model = 'image' if model is None else model
         super().__init__(model)

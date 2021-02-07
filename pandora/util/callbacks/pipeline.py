@@ -1,8 +1,8 @@
-from .base import Callbacks
+from .base import BaseCallbacks
 from time import time
 
 
-class PipelineCallback(Callbacks):
+class PipelineCallback(BaseCallbacks):
     """
     Callback for Pipelines
     """

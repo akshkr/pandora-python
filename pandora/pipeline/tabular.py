@@ -63,7 +63,7 @@ class TabularPipeline(BasePipeline):
         n_split
             Number of split for training data
         """
-        self.cv_params = {'method': method, 'metrics': metrics, 'n_split': n_split, 'n_jobs': self._n_jobs}
+        self._template.add_cross_validation(method=method, metrics=metrics, n_split=n_split, n_jobs=self._n_jobs)
 
     def set_processor(self, n_jobs):
         """
@@ -130,7 +130,7 @@ class TabularPipeline(BasePipeline):
 
             # Validation
             if self.cv_params:
-                handle_cv(self.cv_params, self._template.estimator, features, target)
+                handle_cv(self._template.cross_val, self._template.estimator, features, target)
 
             handle_train_estimator(self._template.estimator, features, target, **self._template.estimator_args)
             for c in callbacks:

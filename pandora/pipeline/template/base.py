@@ -21,6 +21,7 @@ class BaseTemplate:
     def __init__(self):
         self.preprocessing_steps = list()
         self.transformer = None
+        self.cross_val = None
         self.estimator = None
         self.estimator_args = None
 
@@ -37,6 +38,23 @@ class BaseTemplate:
         transformer
         """
         self.transformer = transformer
+
+    def add_cross_validation(self, **cv_params):
+        """
+        Adds Cross-Validation parameters to the template
+
+        Parameters
+        ----------
+        cv_params
+            Cross Validation Parameters
+        """
+        self.cross_val = cv_params
+
+    def remove_cross_validation(self):
+        """
+        Removes cross-validation
+        """
+        self.cross_val = None
 
     def add_estimator(self, estimator, **estimator_args):
         """

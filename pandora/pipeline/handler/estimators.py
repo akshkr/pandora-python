@@ -1,10 +1,16 @@
-from pandora.util.stages.estimation import fit, predict, fit_all, predict_all
+from pandora.util.stages.estimation import fit, predict, fit_all, predict_all, fit_gen
 from pandora.util.stages.validation import base_n_fold_splitter
 from pandora.util.stages.evaluation import EVAL_METRICS_ALIAS
 from copy import deepcopy
 
+__all__ = [
+    'handle_train_estimator',
+    'handle_test_estimator',
+    'handle_cv',
+]
 
-def handle_train_estimator(estimator, features, target, **estimator_args):
+
+def handle_train_estimator(estimator, features=None, target=None, generator=None, **estimator_args):
     """
     Fits Estimator with given features and target
 
@@ -15,6 +21,8 @@ def handle_train_estimator(estimator, features, target, **estimator_args):
         Input features/ independent variable
     target
         Input target/ Dependent variable
+    generator
+        Input data generator
     estimator_args
         Arguments to be passes in Estimator fit function
 
@@ -22,7 +30,10 @@ def handle_train_estimator(estimator, features, target, **estimator_args):
     -------
         Trained model
     """
-    return fit(estimator, features, target, **estimator_args)
+    if features and target:
+        return fit(estimator, features, target, **estimator_args)
+    elif generator:
+        return fit_gen(estimator, generator, **estimator_args)
 
 
 def handle_test_estimator(estimator, features):

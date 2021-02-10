@@ -1,4 +1,6 @@
+from .handler.estimators import handle_train_estimator, handle_test_estimator
 from .handler.generator import compile_generator
+from ..util.callbacks import PipelineCallback
 from .base import BasePipeline
 
 
@@ -6,7 +8,6 @@ class ImagePipeline(BasePipeline):
     def __init__(self, model=None):
         model = 'image' if model is None else model
         super().__init__(model)
-        self._generator = None
 
     def add_image_generator(self, method, directory, dataframe=None, **generator_args):
         """
@@ -71,8 +72,61 @@ class ImagePipeline(BasePipeline):
         self._template.add_transformer(transformer)
         self._template.add_estimator(estimator, **estimator_args)
 
-    def run(self, *args, **kwargs):
-        pass
+    def run(self, features=None, target=None, generator=None, verbose=1, callbacks=None):
+        """
+        Runs the Image pipeline on the given features and target/generator
 
-    def predict(self, *args, **kwargs):
-        pass
+        Parameters
+        ----------
+        features
+            Input Feature(s)
+        target
+            Input target
+        generator : bool
+            True if Image data Generator
+        verbose : bool
+            run verbose
+        callbacks : list
+            List of callbacks
+        """
+        if not callbacks:
+            callbacks = [PipelineCallback()]
+            callbacks[0].set_params({'verbose': verbose})
+
+        if self._template.preprocessor:
+            pass
+
+        if self._template.transformer:
+            pass
+
+        if self._template.estimator:
+            for c in callbacks:
+                c.on_estimation_begin()
+
+            handle_train_estimator(
+                self._template.estimator, features, target, generator,
+                **self._template.estimator_args
+            )
+
+            for c in callbacks:
+                c.on_estimation_end()
+
+    def predict(self, features):
+        """
+        Predicts target of the input features
+
+        Parameters
+        ----------
+        features
+            Input feature(s)
+
+        Returns
+        -------
+            Predicted Values
+        """
+        if self._template.estimator:
+            prediction_values = handle_test_estimator(self._template.estimator, features)
+
+            return prediction_values
+
+        return None

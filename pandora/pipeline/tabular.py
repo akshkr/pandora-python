@@ -2,9 +2,9 @@ from pandora.core.model.builder.base import BaseModelBuilder
 from pandora.util.callbacks import PipelineCallback
 from pandora.util.process import parallelize
 
-from .handler.preprocessors import hstack_from_list
+from .handler.preprocessors import *
+from .handler.estimators import *
 from .base import BasePipeline
-from .handler import *
 
 import pandas as pd
 

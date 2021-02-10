@@ -66,7 +66,7 @@ class ImagePipeline(BasePipeline):
             arguments for Estimator
         """
         self._template.add_generator(
-            compile_generator(self._template.augmentation_params)
+            compile_generator(self._template)
         )
         self._template.add_transformer(transformer)
         self._template.add_estimator(estimator, **estimator_args)

@@ -66,9 +66,11 @@ class ImagePipeline(BasePipeline):
         estimator_args
             arguments for Estimator
         """
-        self._template.add_generator(
-            compile_generator(self._template)
-        )
+        if self._template.generator is not None:
+            self._template.add_generator(
+                compile_generator(self._template)
+            )
+
         self._template.add_transformer(transformer)
         self._template.add_estimator(estimator, **estimator_args)
 
@@ -93,7 +95,7 @@ class ImagePipeline(BasePipeline):
             callbacks = [PipelineCallback()]
             callbacks[0].set_params({'verbose': verbose})
 
-        if self._template.preprocessor:
+        if self._template.preprocessing_steps:
             pass
 
         if self._template.transformer:

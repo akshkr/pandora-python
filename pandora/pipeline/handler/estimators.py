@@ -30,9 +30,9 @@ def handle_train_estimator(estimator, features=None, target=None, generator=None
     -------
         Trained model
     """
-    if features and target:
+    if features is not None and target is not None:
         return fit(estimator, features, target, **estimator_args)
-    elif generator:
+    elif generator is not None:
         return fit_gen(estimator, generator, **estimator_args)
 
 

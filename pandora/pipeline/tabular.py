@@ -129,7 +129,7 @@ class TabularPipeline(BasePipeline):
                 self._template.estimator = estimator_class(**estimator_hyper_params)
 
             # Validation
-            if self.cv_params:
+            if self._template.cross_val:
                 handle_cv(self._template.cross_val, self._template.estimator, features, target)
 
             handle_train_estimator(self._template.estimator, features, target, **self._template.estimator_args)

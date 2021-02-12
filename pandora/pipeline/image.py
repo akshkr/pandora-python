@@ -66,7 +66,7 @@ class ImagePipeline(BasePipeline):
         estimator_args
             arguments for Estimator
         """
-        if self._template.generator is not None:
+        if self._template.generator_params is not None:
             self._template.add_generator(
                 compile_generator(self._template)
             )
@@ -74,7 +74,7 @@ class ImagePipeline(BasePipeline):
         self._template.add_transformer(transformer)
         self._template.add_estimator(estimator, **estimator_args)
 
-    def run(self, features=None, target=None, generator=None, verbose=1, callbacks=None):
+    def run(self, features=None, target=None, verbose=1, callbacks=None):
         """
         Runs the Image pipeline on the given features and target/generator
 
@@ -84,8 +84,6 @@ class ImagePipeline(BasePipeline):
             Input Feature(s)
         target
             Input target
-        generator : bool
-            True if Image data Generator
         verbose : bool
             run verbose
         callbacks : list
@@ -106,7 +104,7 @@ class ImagePipeline(BasePipeline):
                 c.on_estimation_begin()
 
             handle_train_estimator(
-                self._template.estimator, features, target, generator,
+                self._template.estimator, features, target, self._template.generator,
                 **self._template.estimator_args
             )
 

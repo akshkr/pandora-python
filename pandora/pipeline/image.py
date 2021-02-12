@@ -9,7 +9,7 @@ class ImagePipeline(BasePipeline):
         model = 'image' if model is None else model
         super().__init__(model)
 
-    def add_image_generator(self, method, directory, dataframe=None, **generator_args):
+    def add_image_generator(self, method, directory, target_size, dataframe=None, **generator_args):
         """
         Adds Image generator to the pipeline
 
@@ -21,13 +21,15 @@ class ImagePipeline(BasePipeline):
             Directory of images
         dataframe : DataFrame
             DataFrame with labels
+        target_size : tuple
+            Target image size
         generator_args
             Arguments for generator
         """
         if method not in ['dir', 'df']:
             raise ValueError(f'Invalid input. Enter "dir" or "df".')
 
-        self._template.add_generator_params(method=method, directory=directory, dataframe=dataframe, **generator_args)
+        self._template.add_generator_params(method, directory, target_size, dataframe=dataframe, **generator_args)
 
     def add_augmentation(self, **augmentation_params):
         """

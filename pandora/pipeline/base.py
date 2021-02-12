@@ -26,7 +26,6 @@ class BasePipeline(metaclass=ABCMeta):
         self._n_jobs = None
         self._data = None
         self._template = get_template(model)
-        self.cv_params = None
 
     @abstractmethod
     def set_processor(self, *args, **kwargs):

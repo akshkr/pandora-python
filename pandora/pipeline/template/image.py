@@ -24,7 +24,7 @@ class ImageTemplate(BaseTemplate):
         """
         self.augmentation_params = augmentation_params
 
-    def add_generator_params(self, method=None, directory=None, dataframe=None, **generator_args):
+    def add_generator_params(self, method, directory, target_size, dataframe=None, **generator_args):
         """
         Adds Generator parameters to the template
 
@@ -34,6 +34,8 @@ class ImageTemplate(BaseTemplate):
             Method to generate images, either from DataFrame or Directory
         directory : str
             Directory of images
+        target_size : tuple
+            Input image is resized to this dimension
         dataframe : DataFrame
             DataFrame with labels
         generator_args
@@ -42,6 +44,7 @@ class ImageTemplate(BaseTemplate):
         self.generator_params = {
             'method': method,
             'directory': directory,
+            'target_size': target_size,
             'dataframe': dataframe,
             'generator_params': generator_args
         }

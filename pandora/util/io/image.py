@@ -9,31 +9,14 @@ class Generator:
         self.flow = None
         self.params = None
 
-    def set_method(self, method):
-        """
-        Set the flow method
-
-        Parameters
-        ----------
-        method : str ("df" or "dir")
-            Method to load image Dataset
-        """
-        if method not in ['dir', 'df']:
-            raise ValueError(f'Invalid input. Please enter "dir" or "df"')
-        else:
-            self.method = method
-
-        if self.method == 'df':
-            self.flow = self.generator.flow_from_dataframe
-        elif self.method == 'dir':
-            self.flow = self.generator.flow_from_directory
-
-    def set_params(self, directory, dataframe=None, **generator_args):
+    def set_params(self, method, directory, target_size, dataframe=None, **generator_args):
         """
 
         Parameters
         ----------
+        method
         directory
+        target_size
         dataframe
         generator_args
 
@@ -41,10 +24,11 @@ class Generator:
         -------
 
         """
+        self.method = method
+        self.params = {'directory': directory, 'target_size': target_size, **generator_args}
+
         if self.method == 'df':
-            self.params = {'directory': directory, 'dataframe': dataframe, **generator_args}
-        elif self.method == 'dir':
-            self.params = {'directory': directory, **generator_args}
+            self.params['dataframe'] = dataframe
 
     def generate(self, subset='training'):
         """
@@ -61,4 +45,9 @@ class Generator:
         if subset not in ['training', 'validation']:
             raise ValueError('Invalid input. Enter "training" or "Validation"')
 
-        return self.flow(**self.params, subset=subset)
+        if self.method == 'df':
+            return self.generator.flow_from_dataframe(**self.params, subset=subset)
+        elif self.method == 'dir':
+            return self.generator.flow_from_directory(**self.params, subset=subset)
+        else:
+            raise ValueError(f'Invalid input. Please enter "dir" or "df"')

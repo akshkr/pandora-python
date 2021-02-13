@@ -73,6 +73,9 @@ class ImagePipeline(BasePipeline):
                 compile_generator(self._template)
             )
 
+            if self._template.cross_val is not None:
+                estimator_args['validation_data'] = self._template.generator.generate(subset='validation')
+
         self._template.add_transformer(transformer)
         self._template.add_estimator(estimator, **estimator_args)
 

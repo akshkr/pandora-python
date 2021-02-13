@@ -7,7 +7,7 @@ class Generator:
     """
 
     def __init__(self, **augmentation_params):
-        self.generator = ImageDataGenerator(**augmentation_params)
+        self.iterator = ImageDataGenerator(**augmentation_params)
         self.method = None
         self.params = None
 
@@ -52,8 +52,8 @@ class Generator:
             raise ValueError('Invalid input. Enter "training" or "Validation"')
 
         if self.method == 'df':
-            return self.generator.flow_from_dataframe(**self.params, subset=subset)
+            return self.iterator.flow_from_dataframe(**self.params, subset=subset)
         elif self.method == 'dir':
-            return self.generator.flow_from_directory(**self.params, subset=subset)
+            return self.iterator.flow_from_directory(**self.params, subset=subset)
         else:
             raise ValueError(f'Invalid input. Please enter "dir" or "df"')

@@ -73,8 +73,12 @@ class ImagePipeline(BasePipeline):
                 compile_generator(self._template)
             )
 
-            if self._template.cross_val is not None:
+        # Handle cross-validation parameter
+        if self._template.cross_val is not None:
+            if self._template.generator_params is not None:
                 estimator_args['validation_data'] = self._template.generator.generate(subset='validation')
+            else:
+                estimator_args['validation_split'] = self._template.cross_val['validation_split']
 
         self._template.add_transformer(transformer)
         self._template.add_estimator(estimator, **estimator_args)

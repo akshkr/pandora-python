@@ -26,7 +26,22 @@ class BasePipeline(metaclass=ABCMeta):
         self._n_jobs = None
         self._data = None
         self._template = get_template(model)
-        self.cv_params = None
+
+    @abstractmethod
+    def set_processor(self, *args, **kwargs):
+        raise NotImplementedError
+
+    @abstractmethod
+    def enable_cv(self, *args, **kwargs):
+        raise NotImplementedError
+
+    @abstractmethod
+    def run(self, *args, **kwargs):
+        raise NotImplementedError
+
+    @abstractmethod
+    def predict(self, *args, **kwargs):
+        raise NotImplementedError
 
     def get_data(self):
         """
@@ -70,24 +85,8 @@ class BasePipeline(metaclass=ABCMeta):
         self._template.add_transformer(transformer)
         self._template.add_estimator(estimator, **estimator_args)
 
-    @abstractmethod
-    def set_processor(self, *args, **kwargs):
-        raise NotImplementedError
-
-    @abstractmethod
-    def enable_cv(self, *args, **kwargs):
-        raise NotImplementedError
-
     def disable_cv(self):
         """
         Function to disable cross-validation
         """
-        self.cv_params = None
-
-    @abstractmethod
-    def run(self, *args, **kwargs):
-        raise NotImplementedError
-
-    @abstractmethod
-    def predict(self, *args, **kwargs):
-        raise NotImplementedError
+        self._template.remove_cross_validation()

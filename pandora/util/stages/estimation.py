@@ -12,6 +12,13 @@ def predict(estimator, features):
     return estimator.predict(features)
 
 
+def fit_gen(estimator, generator, **kwargs):
+    model = estimator
+    model.fit(generator, **kwargs)
+
+    return model
+
+
 def fit_all(estimators, features, target, n_jobs=None, bootstrap=False, index=None):
     if bootstrap:
         raise NotImplementedError(f'Bootstrap is not implemented. Issue raised at - '

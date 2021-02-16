@@ -1,1 +1,1 @@
-from pandora.core.preprocessor.multivariate import StatisticalMeasure
+from pandora.core.preprocessor.multivariate import StatisticsMeasure

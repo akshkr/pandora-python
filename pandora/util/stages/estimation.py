@@ -1,4 +1,4 @@
-from pandora.util.process import parallelize
+from pandora.util.process.multiprocess import parallelize
 
 
 def fit(estimator, features, target, **kwargs):

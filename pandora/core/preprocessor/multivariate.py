@@ -4,7 +4,7 @@ from pandora.core.preprocessor.base import BaseTransformer
 import numpy as np
 
 
-class StatisticalMeasure(BaseTransformer):
+class StatisticsMeasure(BaseTransformer):
     """
     Returns Statistical parameters for the input data
 

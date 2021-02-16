@@ -1,4 +1,4 @@
-from pandora.preprocessing import StatisticalMeasure
+from pandora.preprocessing import StatisticsMeasure
 from pandora.util import seed_everything
 
 import numpy as np
@@ -9,7 +9,7 @@ seed_everything()
 def test_statistical_preprocessor():
     test_array = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 10], [9, 11, 12]])
 
-    preprocessor_obj = StatisticalMeasure()
+    preprocessor_obj = StatisticsMeasure()
     output = preprocessor_obj.fit_transform(test_array)
 
     real_output = np.array(

@@ -15,11 +15,10 @@ setup(
     packages=find_packages(), install_requires=[
         'numpy',
         'pandas',
-        'spacy',
-        'nltk',
-        'matplotlib',
         'scipy',
         'opencv-python',
-        'scikit-learn'
+        'scikit-learn',
+        'tensorflow',
+        'joblib'
     ]
 )

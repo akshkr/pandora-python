@@ -1,8 +1,6 @@
 import pickle
 import os
 
-__all__ = ['save_model', 'load_model']
-
 
 def save_model(model, name, path):
     """

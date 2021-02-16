@@ -1,6 +1,6 @@
 from pandora.core.model.builder.base import BaseModelBuilder
+from pandora.util.process.multiprocess import parallelize
 from pandora.util.callbacks import PipelineCallback
-from pandora.util.process import parallelize
 
 from .handler.preprocessors import *
 from .handler.estimators import *

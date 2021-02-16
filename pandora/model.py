@@ -1,1 +1,1 @@
-from pandora.core.model.builder import NonParametricModelBuilder
+from pandora.core.model.builder.non_parametric import NonParametricModelBuilder

@@ -1,5 +1,5 @@
 from abc import ABCMeta, abstractmethod
-from pandora.factory import get_template
+from pandora.factory.template import get_template
 
 
 class BasePipeline(metaclass=ABCMeta):

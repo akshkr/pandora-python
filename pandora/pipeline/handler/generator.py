@@ -1,4 +1,16 @@
 def compile_generator(template):
+    """
+    Creates Generator object from Image pipeline template
+
+    Parameters
+    ----------
+    template
+        Image Pipeline template
+
+    Returns
+    -------
+        Generator object
+    """
 
     from pandora.util.io.image import Generator
 

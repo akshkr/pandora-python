@@ -19,6 +19,7 @@ setup(
         'opencv-python',
         'scikit-learn',
         'tensorflow',
-        'joblib'
+        'joblib',
+        'xgboost'
     ]
 )

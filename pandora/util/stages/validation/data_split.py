@@ -1,10 +1,4 @@
-from sklearn.model_selection import KFold, StratifiedKFold
-
-
-DATA_SPLIT_ALIAS = {
-    'KFold': KFold,
-    'StratifiedKFold': StratifiedKFold,
-}
+from pandora.reference.validation import CrossValType
 
 
 def base_n_fold_splitter(splitter, features, target, n_splits=4):
@@ -27,7 +21,7 @@ def base_n_fold_splitter(splitter, features, target, n_splits=4):
         Split index object
     """
     if isinstance(splitter, str):
-        splitter = DATA_SPLIT_ALIAS[splitter]
+        splitter = CrossValType.DATA_SPLIT_ALIAS.value[splitter]
 
     if callable(splitter) and hasattr(splitter, 'split'):
         splitter = splitter(n_splits=n_splits, shuffle=True)

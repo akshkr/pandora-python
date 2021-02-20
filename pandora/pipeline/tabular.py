@@ -1,5 +1,6 @@
 from pandora.core.model.builder.base import BaseModelBuilder
 from pandora.util.process.multiprocess import parallelize
+from pandora.reference.pipeline import PipelineTypes
 from pandora.util.callbacks import PipelineCallback
 
 from .handler.preprocessors import *
@@ -21,7 +22,7 @@ class TabularPipeline(BasePipeline):
         Type of the model
     """
     def __init__(self, model=None):
-        model = 'tabular' if model is None else model
+        model = PipelineTypes.TABULAR.value if model is None else model
         super().__init__(model)
 
     def _extract_steps_array(self, data):

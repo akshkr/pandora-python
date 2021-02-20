@@ -1,12 +1,14 @@
 from .handler.estimators import handle_train_estimator, handle_test_estimator
 from .handler.generator import compile_generator
-from ..util.callbacks import PipelineCallback
 from .base import BasePipeline
+
+from pandora.util.callbacks import PipelineCallback
+from pandora.reference.pipeline import PipelineTypes
 
 
 class ImagePipeline(BasePipeline):
     def __init__(self, model=None):
-        model = 'image' if model is None else model
+        model = PipelineTypes.IMAGE.value if model is None else model
         super().__init__(model)
 
     def add_image_generator(self, method, directory, target_size, dataframe=None, **generator_args):

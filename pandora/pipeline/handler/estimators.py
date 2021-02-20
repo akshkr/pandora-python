@@ -1,6 +1,6 @@
 from pandora.util.stages.estimation import fit, predict, fit_all, predict_all, fit_gen
 from pandora.util.stages.validation import base_n_fold_splitter
-from pandora.util.stages.evaluation import EVAL_METRICS_ALIAS
+from pandora.reference.evaluation import EvaluationMetrics
 from copy import deepcopy
 
 
@@ -74,4 +74,4 @@ def handle_cv(cv_params, estimator, features, target):
 
     for t in list(zip(test_index, predictions)):
         for metric in cv_params['metrics']:
-            print(f'{metric}: {EVAL_METRICS_ALIAS[metric](target[t[0]], t[1])}')
+            print(f'{metric}: {EvaluationMetrics.EVAL_METRICS_ALIAS.value[metric](target[t[0]], t[1])}')

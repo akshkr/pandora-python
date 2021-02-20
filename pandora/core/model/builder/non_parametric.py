@@ -1,6 +1,6 @@
-from pandora.core.model.estimators.parameters import PARAMETER_ALIAS
-from pandora.util.stages.validation import PARAMETER_SEARCH_ALIAS
-from pandora.core.model.estimators import ESTIMATOR_ALIAS
+from pandora.reference.model_params import ModelParameters
+from pandora.reference.validation import SearchType
+from pandora.reference.model import Estimators
 from .base import BaseModelBuilder
 
 import numpy as np
@@ -10,17 +10,18 @@ class NonParametricModelBuilder(BaseModelBuilder):
     """
     Parametric Model Builder
 
-    This class is used cross validate and get optimal parameters
-    For the given model, search method, and dataset
+    Cross validates and get optimal parameters
+    for the given model, search method, and dataset
 
     Parameters
     ----------
     model : str
-        Estimator abbreviation
-        The abbreviations used are in ESTIMATOR_CLASS variable
+        Estimator alias
+        The alias used are in ESTIMATOR_CLASS variable
     search : str
-        Search method abbreviation
-        The abbreviations used are in SEARCH_MODEL_ALIAS variable
+        Search method alias
+        The alias used are in SEARCH_MODEL_ALIAS variable
+    params :
     """
     def __init__(self, model, search='random', params=None):
         self.model = model
@@ -29,9 +30,9 @@ class NonParametricModelBuilder(BaseModelBuilder):
 
     def _init_params(self):
         if not self.params:
-            self.params = PARAMETER_ALIAS.get(self.model, None)
+            self.params = ModelParameters.PARAMETER_ALIAS.value.get(self.model, None)
         if isinstance(self.model, str):
-            self.model = ESTIMATOR_ALIAS.get(self.model, None)
+            self.model = Estimators.ESTIMATOR_ALIAS.value.get(self.model, None)
 
     def build(self, features, target):
         """
@@ -46,7 +47,7 @@ class NonParametricModelBuilder(BaseModelBuilder):
         -------
             Estimator and a dictionary of optimal Hyper-parameters
         """
-        search_func = PARAMETER_SEARCH_ALIAS.get(self.cv_method, None)
+        search_func = SearchType.PARAMETER_SEARCH_ALIAS.value.get(self.cv_method, None)
         self._init_params()
 
         return self.model, search_func(self.model, self.params, features, target)

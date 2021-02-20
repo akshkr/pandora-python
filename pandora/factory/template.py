@@ -1,4 +1,5 @@
 from pandora.pipeline.template import TabularTemplate, ImageTemplate
+from pandora.reference.pipeline import PipelineTypes
 
 
 def get_template(variant=None):
@@ -14,10 +15,10 @@ def get_template(variant=None):
     -------
         Template object
     """
-    if variant == 'tabular':
+    if variant == PipelineTypes.TABULAR.value:
         return TabularTemplate()
 
-    if variant == 'image':
+    if variant == PipelineTypes.IMAGE.value:
         return ImageTemplate()
 
     raise ValueError

@@ -26,13 +26,14 @@ def test_all_columns():
     tp.run(x_train, y_train)
     y_pred = tp.predict(x_test)
     accuracy = mean_squared_error(y_test, y_pred)
-    del tp
 
     LOGGER.info(f'Accuracy: {accuracy}')
     assert accuracy < 15
+    del tp
 
 
-def test_single_preprocessor():
+def test_preprocessors():
+    # Single preprocessor
     tp = TabularPipeline()
     tp.add(MinMaxScaler(), column=[0])
     tp.add(column=range(1, 13))
@@ -44,17 +45,16 @@ def test_single_preprocessor():
     tp.run(x_train, y_train)
     y_pred = tp.predict(x_test)
     accuracy = mean_squared_error(y_test, y_pred)
-    del tp
 
     LOGGER.info(f'Accuracy: {accuracy}')
     assert accuracy < 15
+    del tp
 
-
-def test_multiple_preprocessor_different_column():
+    # Multiple preprocessor and function on different column
     tp = TabularPipeline()
     tp.add(MinMaxScaler(), column=[0, 2, 4])
     tp.add(StandardScaler(), column=[1, 3, 5])
-    tp.add(column=range(6, 13))
+    tp.add(lambda x: x * 10, column=range(6, 13))
     tp.compile(
         estimator=XGBRegressor(random_state=3)
     )
@@ -63,32 +63,12 @@ def test_multiple_preprocessor_different_column():
     tp.run(x_train, y_train)
     y_pred = tp.predict(x_test)
     accuracy = mean_squared_error(y_test, y_pred)
-    del tp
 
     LOGGER.info(f'Accuracy: {accuracy}')
     assert accuracy < 15
-
-
-def test_functions():
-    tp = TabularPipeline()
-    tp.add(lambda x: x*10, column=range(9))
-    tp.add(column=range(9, 13))
-
-    tp.compile(
-        estimator=XGBRegressor(random_state=3)
-    )
-
-    x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=3)
-    tp.run(x_train, y_train)
-    y_pred = tp.predict(x_test)
-    accuracy = mean_squared_error(y_test, y_pred)
     del tp
 
-    LOGGER.info(f'Accuracy: {accuracy}')
-    assert accuracy < 15
-
-
-def test_multiple_preprocessor_same_column():
+    # Multiple function and preprocessor on same column
     tp = TabularPipeline()
     tp.add([lambda x: x * 10, MinMaxScaler()], column=range(4))
     tp.add([MinMaxScaler(), StandardScaler()], column=range(4, 9))
@@ -102,10 +82,10 @@ def test_multiple_preprocessor_same_column():
     tp.run(x_train, y_train)
     y_pred = tp.predict(x_test)
     accuracy = mean_squared_error(y_test, y_pred)
-    del tp
 
     LOGGER.info(f'Accuracy: {accuracy}')
     assert accuracy < 15
+    del tp
 
 
 def test_model_builder():
@@ -120,13 +100,11 @@ def test_model_builder():
     tp.run(x_train, y_train)
     y_pred = tp.predict(x_test)
     accuracy = mean_squared_error(y_test, y_pred)
-    del tp
 
     LOGGER.info(f'Accuracy: {accuracy}')
     assert accuracy < 15
+    del tp
 
-
-def test_grid_model_builder():
     tp = TabularPipeline()
     tp.add(column=range(0, 13))
 
@@ -144,10 +122,10 @@ def test_grid_model_builder():
     tp.run(x_train, y_train)
     y_pred = tp.predict(x_test)
     accuracy = mean_squared_error(y_test, y_pred)
-    del tp
 
     LOGGER.info(f'Accuracy: {accuracy}')
     assert accuracy < 15
+    del tp
 
 
 def test_cv():

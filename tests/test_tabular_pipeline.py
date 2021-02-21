@@ -13,23 +13,7 @@ LOGGER = logging.getLogger(__name__)
 seed_everything()
 
 X, y = load_boston(return_X_y=True)
-
-
-def test_all_columns():
-    tp = TabularPipeline()
-    tp.add(column=range(13))
-    tp.compile(
-        estimator=XGBRegressor(random_state=3)
-    )
-
-    x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=3)
-    tp.run(x_train, y_train)
-    y_pred = tp.predict(x_test)
-    accuracy = mean_squared_error(y_test, y_pred)
-
-    LOGGER.info(f'Accuracy: {accuracy}')
-    assert accuracy < 15
-    del tp
+x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=3)
 
 
 def test_preprocessors():
@@ -41,7 +25,6 @@ def test_preprocessors():
         estimator=XGBRegressor(random_state=3)
     )
 
-    x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=3)
     tp.run(x_train, y_train)
     y_pred = tp.predict(x_test)
     accuracy = mean_squared_error(y_test, y_pred)
@@ -59,7 +42,6 @@ def test_preprocessors():
         estimator=XGBRegressor(random_state=3)
     )
 
-    x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=3)
     tp.run(x_train, y_train)
     y_pred = tp.predict(x_test)
     accuracy = mean_squared_error(y_test, y_pred)
@@ -73,12 +55,25 @@ def test_preprocessors():
     tp.add([lambda x: x * 10, MinMaxScaler()], column=range(4))
     tp.add([MinMaxScaler(), StandardScaler()], column=range(4, 9))
     tp.add(column=range(9, 13))
-
     tp.compile(
         estimator=XGBRegressor(random_state=3)
     )
 
-    x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=3)
+    tp.run(x_train, y_train)
+    y_pred = tp.predict(x_test)
+    accuracy = mean_squared_error(y_test, y_pred)
+
+    LOGGER.info(f'Accuracy: {accuracy}')
+    assert accuracy < 15
+    del tp
+
+    # All raw columns
+    tp = TabularPipeline()
+    tp.add(column=range(13))
+    tp.compile(
+        estimator=XGBRegressor(random_state=3)
+    )
+
     tp.run(x_train, y_train)
     y_pred = tp.predict(x_test)
     accuracy = mean_squared_error(y_test, y_pred)
@@ -89,14 +84,13 @@ def test_preprocessors():
 
 
 def test_model_builder():
+    # Model Builder with inbuilt parameters
     tp = TabularPipeline()
     tp.add(column=range(0, 13))
-
     tp.compile(
         estimator=NonParametricModelBuilder('xgbr', search='random')
     )
 
-    x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=3)
     tp.run(x_train, y_train)
     y_pred = tp.predict(x_test)
     accuracy = mean_squared_error(y_test, y_pred)
@@ -105,20 +99,18 @@ def test_model_builder():
     assert accuracy < 15
     del tp
 
+    # Model Builder with passing parameters
     tp = TabularPipeline()
     tp.add(column=range(0, 13))
-
     params = {
         "max_depth": [3, 8, 12],
         "min_child_weight": [3, 5, 7],
         "colsample_bytree": [0.5, 0.7],
     }
-
     tp.compile(
         estimator=NonParametricModelBuilder('xgbr', 'grid', params=params)
     )
 
-    x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=3)
     tp.run(x_train, y_train)
     y_pred = tp.predict(x_test)
     accuracy = mean_squared_error(y_test, y_pred)
@@ -131,7 +123,6 @@ def test_model_builder():
 def test_cv():
     tp = TabularPipeline()
     tp.add(column=range(0, 13))
-
     tp.compile(
         estimator=XGBRegressor(random_state=3)
     )

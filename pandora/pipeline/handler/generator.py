@@ -11,7 +11,6 @@ def compile_generator(template):
     -------
         Generator object
     """
-
     from pandora.util.io.image import Generator
 
     # Aggregate Generator constructor parameters
@@ -23,10 +22,10 @@ def compile_generator(template):
 
     # Set Flow parameters
     generator.set_params(
-        template.generator_params['method'],
-        template.generator_params['directory'],
-        template.generator_params['target_size'],
-        template.generator_params['dataframe'],
+        method=template.generator_params['method'],
+        directory=template.generator_params['directory'],
+        target_size=template.generator_params['target_size'],
+        dataframe=template.generator_params['dataframe'],
         **template.generator_params['generator_params']
     )
 

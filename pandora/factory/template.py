@@ -2,7 +2,7 @@ from pandora.pipeline.template import TabularTemplate, ImageTemplate
 from pandora.reference.pipeline import PipelineTypes
 
 
-def get_template(variant=None):
+def get_template(variant):
     """
     Returns template for the required variant
 
@@ -21,4 +21,3 @@ def get_template(variant=None):
     if variant == PipelineTypes.IMAGE.value:
         return ImageTemplate()
 
-    raise ValueError

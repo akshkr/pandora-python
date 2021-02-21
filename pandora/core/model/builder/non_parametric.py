@@ -18,10 +18,12 @@ class NonParametricModelBuilder(BaseModelBuilder):
     model : str
         Estimator alias
         The alias used are in ESTIMATOR_CLASS variable
-    search : str
+    search : str, optional
         Search method alias
         The alias used are in SEARCH_MODEL_ALIAS variable
-    params :
+    params : dict, optional
+        hyper-parameter space of model
+        If not passed, ModelParameters.PARAMETER_ALIAS is used
     """
     def __init__(self, model, search='random', params=None):
         self.model = model
@@ -29,8 +31,11 @@ class NonParametricModelBuilder(BaseModelBuilder):
         self.params = params
 
     def _init_params(self):
+        # Initialize model hyper-parameter space
         if not self.params:
             self.params = ModelParameters.PARAMETER_ALIAS.value.get(self.model, None)
+
+        # Initialize model
         if isinstance(self.model, str):
             self.model = Estimators.ESTIMATOR_ALIAS.value.get(self.model, None)
 
@@ -41,8 +46,9 @@ class NonParametricModelBuilder(BaseModelBuilder):
         Parameters
         ----------
         features : np.ndarray
+            Features to be used for parameter tuning
         target : np.ndarray
-
+            Target to be used for parameter tuning
         Returns
         -------
             Estimator and a dictionary of optimal Hyper-parameters

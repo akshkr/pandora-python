@@ -6,7 +6,7 @@ from copy import deepcopy
 
 def handle_train_estimator(estimator, features=None, target=None, generator=None, **estimator_args):
     """
-    Fits Estimator with given features and target
+    Fits Estimator with given features and target or generator
 
     Parameters
     ----------

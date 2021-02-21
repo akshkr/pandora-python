@@ -6,7 +6,7 @@ import numpy as np
 
 class StatisticsMeasure(BaseTransformer):
     """
-    Returns Statistical parameters for the input data
+    Calculates Statistical parameters for the input data
 
     Sum, Mean, Median, Standard deviation, skewness and kurtosis
     is returned by this transformer

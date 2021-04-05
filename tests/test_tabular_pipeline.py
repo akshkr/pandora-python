@@ -5,8 +5,8 @@ from sklearn.datasets import load_boston
 from xgboost import XGBRegressor
 
 from pandora.core.model.builder.non_parametric import NonParametricModelBuilder
-from pandora.util import seed_everything
 from pandora.pipeline import TabularPipeline
+from pandora.util import seed_everything
 
 import logging
 LOGGER = logging.getLogger(__name__)

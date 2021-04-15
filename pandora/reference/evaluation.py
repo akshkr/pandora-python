@@ -1,5 +1,5 @@
-from sklearn.metrics import mean_squared_error
 from enum import Enum
+from sklearn.metrics import mean_squared_error
 
 
 class EvaluationMetrics(Enum):

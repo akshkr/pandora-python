@@ -1,6 +1,6 @@
-from pandora.util.stages.validation import random_search, grid_search
-from sklearn.model_selection import KFold, StratifiedKFold
 from enum import Enum
+from sklearn.model_selection import KFold, StratifiedKFold
+from pandora.util.stages.validation import random_search, grid_search
 
 
 class CrossValType(Enum):

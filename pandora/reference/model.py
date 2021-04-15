@@ -1,5 +1,5 @@
-from xgboost import XGBRegressor, XGBClassifier
 from enum import Enum
+from xgboost import XGBRegressor, XGBClassifier
 
 
 class Estimators(Enum):

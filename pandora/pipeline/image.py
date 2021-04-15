@@ -1,9 +1,9 @@
+from pandora.util.callbacks import PipelineCallback
+from pandora.reference.pipeline import PipelineTypes
+
 from .handler.estimators import handle_train_estimator, handle_test_estimator
 from .handler.generator import compile_generator
 from .base import BasePipeline
-
-from pandora.util.callbacks import PipelineCallback
-from pandora.reference.pipeline import PipelineTypes
 
 
 class ImagePipeline(BasePipeline):
@@ -44,7 +44,7 @@ class ImagePipeline(BasePipeline):
         """
         self._template.add_augmentation_params(**augmentation_params)
 
-    def set_processor(self, *args, **kwargs):
+    def set_processor(self, n_jobs):
         pass
 
     def enable_cv(self, validation_split=None):

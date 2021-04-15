@@ -1,7 +1,7 @@
+import numpy as np
+
 from pandora.util.stages.transformation import fit_transform, transform
 from pandora.util.conversion import get_values, convert_to_numpy
-
-import numpy as np
 
 
 def handle_train_preprocessor(preprocessor, feature):

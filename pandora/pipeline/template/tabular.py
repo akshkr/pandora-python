@@ -7,9 +7,6 @@ class TabularTemplate(BaseTemplate):
 
     This template is used for Composite type dataset based pipeline
     """
-    def __init__(self):
-        super().__init__()
-
     def add_preprocessor(self, preprocessor, column=None):
         """
         Adds preprocessor to the template

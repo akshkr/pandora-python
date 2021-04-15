@@ -1,3 +1,6 @@
+from pandora.util.io.image import Generator
+
+
 def compile_generator(template):
     """
     Creates Generator object from Image pipeline template
@@ -11,8 +14,6 @@ def compile_generator(template):
     -------
         Generator object
     """
-    from pandora.util.io.image import Generator
-
     # Aggregate Generator constructor parameters
     # Handle validation on generator
     generator_args = {**template.augmentation_params}

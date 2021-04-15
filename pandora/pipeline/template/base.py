@@ -26,7 +26,7 @@ class BaseTemplate:
         self.estimator_args = None
 
     @abstractmethod
-    def add_preprocessor(self, *args, **kwargs):
+    def add_preprocessor(self, preprocessor, column=None):
         raise NotImplementedError
 
     def add_transformer(self, transformer):

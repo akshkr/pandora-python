@@ -1,7 +1,8 @@
+from copy import deepcopy
+
 from pandora.util.stages.estimation import fit, predict, fit_all, predict_all, fit_gen
 from pandora.util.stages.validation import base_n_fold_splitter
 from pandora.reference.evaluation import EvaluationMetrics
-from copy import deepcopy
 
 
 def handle_train_estimator(estimator, features=None, target=None, generator=None, **estimator_args):
@@ -26,8 +27,11 @@ def handle_train_estimator(estimator, features=None, target=None, generator=None
     """
     if features is not None and target is not None:
         return fit(estimator, features, target, **estimator_args)
+        
     elif generator is not None:
         return fit_gen(estimator, generator.generate(subset='training'), **estimator_args)
+
+    return None
 
 
 def handle_test_estimator(estimator, features):
@@ -69,9 +73,13 @@ def handle_cv(cv_params, estimator, features, target):
     # Make copies of estimator to multiprocess
     estimator_list = [deepcopy(estimator) for i in range(cv_params['n_split'])]
 
-    estimator_list = fit_all(estimator_list, features, target, n_jobs=cv_params['n_jobs'], index=train_index)
-    predictions = predict_all(estimator_list, features, n_jobs=cv_params['n_jobs'], index=test_index)
+    estimator_list = fit_all(
+        estimator_list, features, target, n_jobs=cv_params['n_jobs'], index=train_index
+        )
+    predictions = predict_all(
+        estimator_list, features, n_jobs=cv_params['n_jobs'], index=test_index
+        )
 
-    for t in list(zip(test_index, predictions)):
+    for eval_data in list(zip(test_index, predictions)):
         for metric in cv_params['metrics']:
-            print(f'{metric}: {EvaluationMetrics.EVAL_METRICS_ALIAS.value[metric](target[t[0]], t[1])}')
+            print(f'{metric}: {EvaluationMetrics.EVAL_METRICS_ALIAS.value[metric](target[eval_data[0]], eval_data[1])}')

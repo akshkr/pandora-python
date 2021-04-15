@@ -8,5 +8,5 @@ class BaseTransformer(metaclass=ABCMeta):
     Used to transform data
     """
     @abstractmethod
-    def fit_transform(self, **kwargs):
+    def fit_transform(self, features):
         raise NotImplementedError

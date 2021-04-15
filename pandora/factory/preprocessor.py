@@ -1,6 +1,7 @@
-from pandora.util.statistics import Frame, NumpyFrame, Dataframe
 import pandas as pd
 import numpy as np
+
+from pandora.util.statistics import Frame, NumpyFrame, Dataframe
 
 
 class StatisticalPreprocessor:

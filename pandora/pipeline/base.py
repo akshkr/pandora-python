@@ -28,19 +28,19 @@ class BasePipeline(metaclass=ABCMeta):
         self._template = get_template(model)
 
     @abstractmethod
-    def set_processor(self, *args, **kwargs):
+    def set_processor(self, n_jobs):
         raise NotImplementedError
 
     @abstractmethod
-    def enable_cv(self, *args, **kwargs):
+    def enable_cv(self, method, metrics, n_split=4, validation_split=None):
         raise NotImplementedError
 
     @abstractmethod
-    def run(self, *args, **kwargs):
+    def run(self, features, target, verbose=1, callbacks=None, retain_data=False):
         raise NotImplementedError
 
     @abstractmethod
-    def predict(self, *args, **kwargs):
+    def predict(self, features):
         raise NotImplementedError
 
     def get_data(self):

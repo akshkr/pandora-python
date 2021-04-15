@@ -24,9 +24,9 @@ class BaseEnsemble(metaclass=ABCMeta):
         self.estimator = estimators
 
     @abstractmethod
-    def fit(self, *args, **kwargs):
+    def fit(self, features, target):
         raise NotImplementedError
 
     @abstractmethod
-    def predict(self, *args, **kwargs):
+    def predict(self, features):
         raise NotImplementedError

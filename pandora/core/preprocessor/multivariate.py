@@ -1,7 +1,7 @@
+import numpy as np
+
 from pandora.factory.preprocessor import StatisticalPreprocessor
 from pandora.core.preprocessor.base import BaseTransformer
-
-import numpy as np
 
 
 class StatisticsMeasure(BaseTransformer):

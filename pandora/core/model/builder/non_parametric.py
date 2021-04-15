@@ -1,9 +1,9 @@
+import numpy as np
+
 from pandora.reference.model_params import ModelParameters
 from pandora.reference.validation import SearchType
 from pandora.reference.model import Estimators
 from .base import BaseModelBuilder
-
-import numpy as np
 
 
 class NonParametricModelBuilder(BaseModelBuilder):

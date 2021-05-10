@@ -29,7 +29,7 @@ class ImagePipeline(BasePipeline):
             Arguments for generator
         """
         if method not in ['dir', 'df']:
-            raise ValueError(f'Invalid input. Enter "dir" or "df".')
+            raise ValueError('Invalid input. Enter "dir" or "df".')
 
         self._template.add_generator_params(method, directory, target_size, dataframe=dataframe, **generator_args)
 
@@ -85,7 +85,7 @@ class ImagePipeline(BasePipeline):
         self._template.add_transformer(transformer)
         self._template.add_estimator(estimator, **estimator_args)
 
-    def run(self, features=None, target=None, verbose=1, callbacks=None):
+    def run(self, features=None, target=None, verbose=1, callbacks=None, retain_data=False):
         """
         Runs the Image pipeline on the given features and target/generator
 
@@ -121,6 +121,9 @@ class ImagePipeline(BasePipeline):
 
             for c in callbacks:
                 c.on_estimation_end()
+
+        if retain_data:
+            self._data = features
 
     def predict(self, features):
         """

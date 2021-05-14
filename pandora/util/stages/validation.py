@@ -1,5 +1,4 @@
 from sklearn.model_selection import RandomizedSearchCV, GridSearchCV
-import numpy as np
 
 
 def random_search(model, params, features, target):
@@ -72,4 +71,3 @@ def base_n_fold_splitter(splitter, features, target, n_splits=4):
         splitter = splitter(n_splits=n_splits, shuffle=True)
 
     return splitter.split(features, target)
-

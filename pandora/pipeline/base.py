@@ -52,7 +52,7 @@ class BasePipeline(metaclass=ABCMeta):
             preprocessed features
         """
         if self._data is None:
-            print(f'No Data retained in memory. Call "pipeline.run" with "retain_data=True".')
+            print('No Data retained in memory. Call "pipeline.run" with "retain_data=True".')
 
         return self._data
 

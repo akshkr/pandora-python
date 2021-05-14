@@ -1,10 +1,10 @@
 import numpy as np
 
 from pandora.factory.preprocessor import StatisticalPreprocessor
-from pandora.core.preprocessor.base import BaseTransformer
+from pandora.core.preprocessor.base import BaseTransform
 
 
-class StatisticsMeasure(BaseTransformer):
+class StatisticsMeasure(BaseTransform):
     """
     Calculates Statistical parameters for the input data
 

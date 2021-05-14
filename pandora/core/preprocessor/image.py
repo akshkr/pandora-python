@@ -1,7 +1,7 @@
-from .base import BaseTransformer
+from .base import BaseTransform
 
 
-class ImageScaler(BaseTransformer):
+class ImageScaler(BaseTransform):
     """
     Scales image array
     """

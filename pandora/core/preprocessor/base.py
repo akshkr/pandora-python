@@ -1,9 +1,9 @@
 from abc import ABCMeta, abstractmethod
 
 
-class BaseTransformer(metaclass=ABCMeta):
+class BaseTransform(metaclass=ABCMeta):
     """
-    Base Transformer class
+    Base Transform class
 
     Used to transform data
     """

@@ -21,3 +21,4 @@ def get_template(variant):
     if variant == PipelineTypes.IMAGE.value:
         return ImageTemplate()
 
+    raise ValueError(f'Undefined template variant "{variant}"')

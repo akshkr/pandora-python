@@ -70,7 +70,7 @@ class BasePipeline(metaclass=ABCMeta):
         """
         self._template.add_preprocessor(preprocessor, **preprocessor_params)
 
-    def compile(self, transformer=None, estimator=None, **estimator_args):
+    def compile(self, estimator=None, **estimator_args):
         """
         Adds Transformer and Estimator to the template
 
@@ -82,7 +82,6 @@ class BasePipeline(metaclass=ABCMeta):
         estimator_args
             arguments for Estimator
         """
-        self._template.add_transformer(transformer)
         self._template.add_estimator(estimator, **estimator_args)
 
     def disable_cv(self):

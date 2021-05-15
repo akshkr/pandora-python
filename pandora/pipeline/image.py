@@ -58,7 +58,7 @@ class ImagePipeline(BasePipeline):
         """
         self._template.add_cross_validation(validation_split=validation_split)
 
-    def compile(self, transformer=None, estimator=None, **estimator_args):
+    def compile(self, estimator=None, **estimator_args):
         """
         Adds Transformer and Estimator to the template
 
@@ -82,7 +82,6 @@ class ImagePipeline(BasePipeline):
             else:
                 estimator_args['validation_split'] = self._template.cross_val['validation_split']
 
-        self._template.add_transformer(transformer)
         self._template.add_estimator(estimator, **estimator_args)
 
     def run(self, features=None, target=None, verbose=1, callbacks=None, retain_data=False):
@@ -107,20 +106,17 @@ class ImagePipeline(BasePipeline):
         if self._template.preprocessing_steps:
             pass
 
-        if self._template.transformer:
-            pass
-
         if self._template.estimator:
-            for c in callbacks:
-                c.on_estimation_begin()
+            for callback in callbacks:
+                callback.on_estimation_begin()
 
             handle_train_estimator(
                 self._template.estimator, features, target, self._template.generator,
                 **self._template.estimator_args
             )
 
-            for c in callbacks:
-                c.on_estimation_end()
+            for callback in callbacks:
+                callback.on_estimation_end()
 
         if retain_data:
             self._data = features

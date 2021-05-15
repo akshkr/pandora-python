@@ -17,7 +17,7 @@ class BasePipeline(metaclass=ABCMeta):
     ----------
     _template : object
         Template object encapsulates skeleton of the Pipeline.
-        It comprises of preprocessing steps, transformer, estimator
+        It comprises of preprocessing steps, estimator
     _data : np.ndarray
         Data Stored after preprocessing
     """
@@ -29,18 +29,64 @@ class BasePipeline(metaclass=ABCMeta):
 
     @abstractmethod
     def set_processor(self, n_jobs):
+        """
+        Sets Processor parameters
+
+        Parameters
+        ----------
+        n_jobs : int
+            Number of jobs to run in parallel
+        """
         raise NotImplementedError
 
     @abstractmethod
     def enable_cv(self, method, metrics, n_split=4, validation_split=None):
+        """
+        Enables cross-validation
+
+        Parameters
+        ----------
+        method : str or object
+            Method used for cross-validation
+        metrics : list of str
+            Evaluation metrics to be used
+        n_split
+            Number of split for training data
+        validation_split : float
+            Validation ratio
+        """
         raise NotImplementedError
 
     @abstractmethod
     def run(self, features, target, verbose=1, callbacks=None, retain_data=False):
+        """
+        Runs the Pipeline on the given input features and target
+
+        Parameters
+        ----------
+        features
+            Input feature(s)
+        target
+            Target to estimate
+        verbose : int
+            run verbose
+        callbacks : list
+            List of callback objects
+        retain_data : bool
+            Retain features after preprocessing if True
+        """
         raise NotImplementedError
 
     @abstractmethod
     def predict(self, features):
+        """
+        Predicts target of the input features
+
+        Parameters
+        ----------
+        features
+            Input feature(s)
+        """
         raise NotImplementedError
 
     def get_data(self):
@@ -62,11 +108,10 @@ class BasePipeline(metaclass=ABCMeta):
 
         Parameters
         ----------
-        preprocessor : object or function  or list
+        preprocessor : object or function or list
             Preprocessor class or function of list containing Preprocessor
-            or functions. These are the function(s) applied to one vector
+            or functions. These are the function(s) applied to one set of features
         preprocessor_params
-            column/columns
         """
         self._template.add_preprocessor(preprocessor, **preprocessor_params)
 
@@ -76,7 +121,6 @@ class BasePipeline(metaclass=ABCMeta):
 
         Parameters
         ----------
-        transformer
         estimator : object
             Model to Estimate predictions
         estimator_args

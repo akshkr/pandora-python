@@ -11,6 +11,9 @@ class ImagePipeline(BasePipeline):
         model = PipelineTypes.IMAGE.value if model is None else model
         super().__init__(model)
 
+    def set_processor(self, n_jobs):
+        self._n_jobs = n_jobs
+
     def add_image_generator(self, method, directory, target_size, dataframe=None, **generator_args):
         """
         Adds Image generator to the pipeline
@@ -31,7 +34,9 @@ class ImagePipeline(BasePipeline):
         if method not in ['dir', 'df']:
             raise ValueError('Invalid input. Enter "dir" or "df".')
 
-        self._template.add_generator_params(method, directory, target_size, dataframe=dataframe, **generator_args)
+        self._template.add_generator_params(
+            method, directory, target_size, dataframe=dataframe, **generator_args
+            )
 
     def add_augmentation(self, **augmentation_params):
         """
@@ -43,9 +48,6 @@ class ImagePipeline(BasePipeline):
             Augmentation Parameters
         """
         self._template.add_augmentation_params(**augmentation_params)
-
-    def set_processor(self, n_jobs):
-        pass
 
     def enable_cv(self, validation_split=None):
         """
@@ -70,6 +72,7 @@ class ImagePipeline(BasePipeline):
         estimator_args
             arguments for Estimator
         """
+        # Add custom generator object to the template
         if self._template.generator_params is not None:
             self._template.add_generator(
                 compile_generator(self._template)

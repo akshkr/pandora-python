@@ -55,7 +55,10 @@ class TabularPipeline(BasePipeline):
 
         return preprocessor_list, features
 
-    def enable_cv(self, method, metrics, n_split=4):
+    def set_processor(self, n_jobs):
+        self._n_jobs = n_jobs
+
+    def enable_cv(self, method, metrics, n_split=4, validation_split=None):
         """
         Enables cross-validation
 
@@ -68,18 +71,10 @@ class TabularPipeline(BasePipeline):
         n_split
             Number of split for training data
         """
-        self._template.add_cross_validation(method=method, metrics=metrics, n_split=n_split, n_jobs=self._n_jobs)
-
-    def set_processor(self, n_jobs):
-        """
-        Sets Processor parameters
-
-        Parameters
-        ----------
-        n_jobs : int
-            Number of jobs to run in parallel
-        """
-        self._n_jobs = n_jobs
+        self._template.add_cross_validation(
+            method=method, metrics=metrics, n_split=n_split,
+            n_jobs=self._n_jobs, validation_split=None
+            )
 
     def run(self, features, target, verbose=1, callbacks=None, retain_data=False):
         """

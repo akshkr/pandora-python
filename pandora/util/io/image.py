@@ -56,4 +56,4 @@ class Generator:
         elif self.method == 'dir':
             return self.iterator.flow_from_directory(**self.params, subset=subset)
         else:
-            raise ValueError(f'Invalid input. Please enter "dir" or "df"')
+            raise ValueError('Invalid input. Please enter "dir" or "df"')

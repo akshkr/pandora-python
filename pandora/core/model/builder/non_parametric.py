@@ -32,14 +32,14 @@ class NonParametricModelBuilder(BaseModelBuilder):
         self.params = params
 
     def _init_params(self):
-        # Initialize model hyper-parameter space
+        # re-initialize model hyper-parameter space if string is passed
         if self.params is None:
             parameter_dict = ModelParameters.PARAMETER_ALIAS.value
             check_key(self.model, parameter_dict)
 
             self.params = parameter_dict.get(self.model, None)
 
-        # Initialize model
+        # re-initialize model if only string is passed
         if isinstance(self.model, str):
             estimator_dict = Estimators.ESTIMATOR_ALIAS.value
             check_key(self.model, estimator_dict)
@@ -63,6 +63,7 @@ class NonParametricModelBuilder(BaseModelBuilder):
         """
         search_func_dict = SearchType.PARAMETER_SEARCH_ALIAS.value
         check_key(self.cv_method, search_func_dict)
+
         search_func = search_func_dict.get(self.cv_method, None)
         self._init_params()
 

@@ -75,7 +75,7 @@ class TabularPipeline(BasePipeline):
         """
         self._template.add_cross_validation(
             method=method, metrics=metrics, n_split=n_split,
-            n_jobs=self._n_jobs, validation_split=None
+            n_jobs=self._n_jobs, validation_split=validation_split
             )
 
     def run(self, features, target, verbose=1, callbacks=None, retain_data=False):

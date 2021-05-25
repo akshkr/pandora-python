@@ -1,8 +1,8 @@
 from copy import deepcopy
 
 from pandora.util.stages.estimation import fit, predict, fit_all, predict_all, fit_gen
-from pandora.util.stages.validation import base_n_fold_splitter
 from pandora.reference.evaluation import EvaluationMetrics
+from pandora.reference.validation import CrossValType
 
 
 def handle_train_estimator(estimator, features=None, target=None, generator=None, **estimator_args):
@@ -49,6 +49,34 @@ def handle_test_estimator(estimator, features):
         predicted output
     """
     return predict(estimator, features)
+
+
+def base_n_fold_splitter(splitter, features, target, n_splits=4):
+    """
+    N Fold split for cross validation
+
+    Parameters
+    ----------
+    splitter : callable or object
+        Splitter object or class to perform split
+    features : np.ndarray or pd.DataFrame
+        Features to be split
+    target : np.ndarray or pd.DataFrame
+        Target to be split
+    n_splits : int
+        Number of folds to be split
+
+    Returns
+    -------
+        Split index object
+    """
+    if isinstance(splitter, str):
+        splitter = CrossValType.DATA_SPLIT_ALIAS.value[splitter]
+
+    if callable(splitter) and hasattr(splitter, 'split'):
+        splitter = splitter(n_splits=n_splits, shuffle=True)
+
+    return splitter.split(features, target)
 
 
 def handle_cv(cv_params, estimator, features, target):

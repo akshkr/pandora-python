@@ -30,17 +30,11 @@ def handle_train_preprocessor(preprocessor, feature):
         for i in preprocessor[:-1]:
             feature = fit_transform(i, feature)
 
-            # 201109: Uncomment this to get models
-            # preprocessor_list.append(operator)
         preprocessor = preprocessor[-1]
 
     # If input is one preprocessor/ last preprocessor of the list
-    # Run and append the list of models to the N-1 models
+    # Get the transformed values and return
     transformed_values = fit_transform(preprocessor, feature)
-
-    # 201109: Uncomment this to get models
-    # if preprocessor_list:
-    #     models = [*preprocessor_list, models]
 
     return [transformed_values]
 

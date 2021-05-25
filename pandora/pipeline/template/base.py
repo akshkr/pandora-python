@@ -24,10 +24,6 @@ class BaseTemplate:
         self.estimator = None
         self.estimator_args = None
 
-    @abstractmethod
-    def add_preprocessor(self, preprocessor, column=None):
-        raise NotImplementedError
-
     def add_cross_validation(self, **cv_params):
         """
         Adds Cross-Validation parameters to the template

@@ -23,6 +23,7 @@ def handle_train_preprocessor(preprocessor, feature):
     # If No preprocessor is passed return the raw values
     if preprocessor is None:
         return [get_values(feature)]
+
     # If input preprocessors are a list of preprocessor
     # Run N-1 preprocessor and append the list of trained preprocessor
     if isinstance(preprocessor, list):

@@ -70,6 +70,8 @@ class TabularPipeline(BasePipeline):
             Evaluation metrics to be used
         n_split
             Number of split for training data
+        validation_split: float
+            Ratio in which train-validation data is to be split
         """
         self._template.add_cross_validation(
             method=method, metrics=metrics, n_split=n_split,

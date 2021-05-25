@@ -40,24 +40,6 @@ class BasePipeline(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    def enable_cv(self, method, metrics, n_split=4, validation_split=None):
-        """
-        Enables cross-validation
-
-        Parameters
-        ----------
-        method : str or object
-            Method used for cross-validation
-        metrics : list of str
-            Evaluation metrics to be used
-        n_split
-            Number of split for training data
-        validation_split : float
-            Validation ratio
-        """
-        raise NotImplementedError
-
-    @abstractmethod
     def run(self, features, target, verbose=1, callbacks=None, retain_data=False):
         """
         Runs the Pipeline on the given input features and target

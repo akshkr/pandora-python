@@ -66,7 +66,6 @@ class ImagePipeline(BasePipeline):
 
         Parameters
         ----------
-        transformer
         estimator : object
             Model to Estimate predictions
         estimator_args

@@ -27,11 +27,11 @@ def handle_train_estimator(estimator, features=None, target=None, generator=None
     """
     if features is not None and target is not None:
         return fit(estimator, features, target, **estimator_args)
-        
+
     elif generator is not None:
         return fit_gen(estimator, generator.generate(subset='training'), **estimator_args)
 
-    return None
+    raise ValueError('No data passed. Pass features/target or generator.')
 
 
 def handle_test_estimator(estimator, features):

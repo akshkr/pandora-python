@@ -3,6 +3,7 @@ import numpy as np
 from pandora.reference.model_params import ModelParameters
 from pandora.reference.validation import SearchType
 from pandora.reference.model import Estimators
+from pandora.util.handler.error import check_key
 from .base import BaseModelBuilder
 
 
@@ -31,13 +32,19 @@ class NonParametricModelBuilder(BaseModelBuilder):
         self.params = params
 
     def _init_params(self):
-        # Initialize model hyper-parameter space
-        if not self.params:
-            self.params = ModelParameters.PARAMETER_ALIAS.value.get(self.model, None)
+        # re-initialize model hyper-parameter space if string is passed
+        if self.params is None:
+            parameter_dict = ModelParameters.PARAMETER_ALIAS.value
+            check_key(self.model, parameter_dict)
 
-        # Initialize model
+            self.params = parameter_dict.get(self.model, None)
+
+        # re-initialize model if only string is passed
         if isinstance(self.model, str):
-            self.model = Estimators.ESTIMATOR_ALIAS.value.get(self.model, None)
+            estimator_dict = Estimators.ESTIMATOR_ALIAS.value
+            check_key(self.model, estimator_dict)
+
+            self.model = estimator_dict.get(self.model, None)
 
     def build(self, features, target):
         """
@@ -49,11 +56,15 @@ class NonParametricModelBuilder(BaseModelBuilder):
             Features to be used for parameter tuning
         target : np.ndarray
             Target to be used for parameter tuning
+
         Returns
         -------
             Estimator and a dictionary of optimal Hyper-parameters
         """
-        search_func = SearchType.PARAMETER_SEARCH_ALIAS.value.get(self.cv_method, None)
+        search_func_dict = SearchType.PARAMETER_SEARCH_ALIAS.value
+        check_key(self.cv_method, search_func_dict)
+
+        search_func = search_func_dict.get(self.cv_method, None)
         self._init_params()
 
         return self.model, search_func(self.model, self.params, features, target)

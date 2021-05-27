@@ -55,7 +55,10 @@ class TabularPipeline(BasePipeline):
 
         return preprocessor_list, features
 
-    def enable_cv(self, method, metrics, n_split=4):
+    def set_processor(self, n_jobs):
+        self._n_jobs = n_jobs
+
+    def enable_cv(self, method, metrics, n_split=4, validation_split=None):
         """
         Enables cross-validation
 
@@ -67,19 +70,13 @@ class TabularPipeline(BasePipeline):
             Evaluation metrics to be used
         n_split
             Number of split for training data
+        validation_split: float
+            Ratio in which train-validation data is to be split
         """
-        self._template.add_cross_validation(method=method, metrics=metrics, n_split=n_split, n_jobs=self._n_jobs)
-
-    def set_processor(self, n_jobs):
-        """
-        Sets Processor parameters
-
-        Parameters
-        ----------
-        n_jobs : int
-            Number of jobs to run in parallel
-        """
-        self._n_jobs = n_jobs
+        self._template.add_cross_validation(
+            method=method, metrics=metrics, n_split=n_split,
+            n_jobs=self._n_jobs, validation_split=validation_split
+            )
 
     def run(self, features, target, verbose=1, callbacks=None, retain_data=False):
         """
@@ -104,8 +101,8 @@ class TabularPipeline(BasePipeline):
 
         # Run Preprocessing steps on the input features
         if self._template.preprocessing_steps:
-            for c in callbacks:
-                c.on_preprocess_begin()
+            for callback in callbacks:
+                callback.on_preprocess_begin()
             preprocessor_list, features = self._extract_steps_array(features)
 
             # parallel preprocessing
@@ -116,17 +113,14 @@ class TabularPipeline(BasePipeline):
             )
 
             features = hstack_from_list(features)
-            for c in callbacks:
-                c.on_preprocess_end()
+            for callback in callbacks:
+                callback.on_preprocess_end()
 
             del preprocessor_list
 
-        if self._template.transformer:
-            pass
-
         if self._template.estimator:
-            for c in callbacks:
-                c.on_estimation_begin()
+            for callback in callbacks:
+                callback.on_estimation_begin()
 
             # Model Builder
             if isinstance(self._template.estimator, BaseModelBuilder):
@@ -138,8 +132,8 @@ class TabularPipeline(BasePipeline):
                 handle_cv(self._template.cross_val, self._template.estimator, features, target)
 
             handle_train_estimator(self._template.estimator, features, target, **self._template.estimator_args)
-            for c in callbacks:
-                c.on_estimation_end()
+            for callback in callbacks:
+                callback.on_estimation_end()
 
         if retain_data:
             self._data = features
@@ -167,9 +161,6 @@ class TabularPipeline(BasePipeline):
             )
 
             features = hstack_from_list(features)
-
-        if self._template.transformer:
-            pass
 
         if self._template.estimator:
             prediction_values = handle_test_estimator(self._template.estimator, features)

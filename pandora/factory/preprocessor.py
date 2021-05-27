@@ -8,7 +8,7 @@ class StatisticalPreprocessor:
     """
     Factory for Statistical Preprocessor operating on various DataTypes
 
-    Calling this function returns the preprocessor of relevant datatype
+    Calling this class returns the preprocessor of relevant datatype
     passed in the constructor
     """
 

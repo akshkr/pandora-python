@@ -11,6 +11,9 @@ class ImagePipeline(BasePipeline):
         model = PipelineTypes.IMAGE.value if model is None else model
         super().__init__(model)
 
+    def set_processor(self, n_jobs):
+        self._n_jobs = n_jobs
+
     def add_image_generator(self, method, directory, target_size, dataframe=None, **generator_args):
         """
         Adds Image generator to the pipeline
@@ -31,7 +34,9 @@ class ImagePipeline(BasePipeline):
         if method not in ['dir', 'df']:
             raise ValueError('Invalid input. Enter "dir" or "df".')
 
-        self._template.add_generator_params(method, directory, target_size, dataframe=dataframe, **generator_args)
+        self._template.add_generator_params(
+            method, directory, target_size, dataframe=dataframe, **generator_args
+            )
 
     def add_augmentation(self, **augmentation_params):
         """
@@ -44,9 +49,6 @@ class ImagePipeline(BasePipeline):
         """
         self._template.add_augmentation_params(**augmentation_params)
 
-    def set_processor(self, n_jobs):
-        pass
-
     def enable_cv(self, validation_split=None):
         """
         Enables Cross-validation
@@ -58,18 +60,18 @@ class ImagePipeline(BasePipeline):
         """
         self._template.add_cross_validation(validation_split=validation_split)
 
-    def compile(self, transformer=None, estimator=None, **estimator_args):
+    def compile(self, estimator=None, **estimator_args):
         """
         Adds Transformer and Estimator to the template
 
         Parameters
         ----------
-        transformer
         estimator : object
             Model to Estimate predictions
         estimator_args
             arguments for Estimator
         """
+        # Add custom generator object to the template
         if self._template.generator_params is not None:
             self._template.add_generator(
                 compile_generator(self._template)
@@ -82,7 +84,6 @@ class ImagePipeline(BasePipeline):
             else:
                 estimator_args['validation_split'] = self._template.cross_val['validation_split']
 
-        self._template.add_transformer(transformer)
         self._template.add_estimator(estimator, **estimator_args)
 
     def run(self, features=None, target=None, verbose=1, callbacks=None, retain_data=False):
@@ -107,20 +108,17 @@ class ImagePipeline(BasePipeline):
         if self._template.preprocessing_steps:
             pass
 
-        if self._template.transformer:
-            pass
-
         if self._template.estimator:
-            for c in callbacks:
-                c.on_estimation_begin()
+            for callback in callbacks:
+                callback.on_estimation_begin()
 
             handle_train_estimator(
                 self._template.estimator, features, target, self._template.generator,
                 **self._template.estimator_args
             )
 
-            for c in callbacks:
-                c.on_estimation_end()
+            for callback in callbacks:
+                callback.on_estimation_end()
 
         if retain_data:
             self._data = features

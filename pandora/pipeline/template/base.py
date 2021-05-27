@@ -3,7 +3,7 @@ from abc import abstractmethod
 
 class BaseTemplate:
     """
-    Base Template class for inheritance
+    Base Template class
 
     This class must be inherited by all child Template class
 
@@ -11,7 +11,7 @@ class BaseTemplate:
     ----------
     preprocessing_steps : list
         list of preprocessing step details
-    transformer
+    cross_val
     estimator
         Estimator
     estimator_args
@@ -20,24 +20,9 @@ class BaseTemplate:
 
     def __init__(self):
         self.preprocessing_steps = list()
-        self.transformer = None
         self.cross_val = None
         self.estimator = None
         self.estimator_args = None
-
-    @abstractmethod
-    def add_preprocessor(self, preprocessor, column=None):
-        raise NotImplementedError
-
-    def add_transformer(self, transformer):
-        """
-        Adds transformer to the template
-
-        Parameters
-        ----------
-        transformer
-        """
-        self.transformer = transformer
 
     def add_cross_validation(self, **cv_params):
         """
